@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    Login | TradeWithMe Global
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="styles.css"
+  >
+
+</head>
+
+<body>
+
+  <div class="auth-wrapper">
+
+    <div class="auth-card">
+
+      <a
+        href="index.html"
+        class="back-home"
+      >
+        ← Back to TradeWithMe
+      </a>
+
+      <a
+        href="index.html"
+        class="logo"
+      >
+        TradeWith<span>Me</span>
+      </a>
+
+      <h1>
+        Welcome back
+      </h1>
+
+      <p class="subtitle">
+        Login to access your TradeWithMe member area.
+      </p>
+
+      <div
+        id="message"
+        class="message"
+      ></div>
+
+      <form id="loginForm">
+
+        <div class="form-group">
+
+          <label for="email">
+            Email address
+          </label>
+
+          <input
+            type="email"
+            id="email"
+            placeholder="you@example.com"
+            autocomplete="email"
+            required
+          >
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="password">
+            Password
+          </label>
+
+          <div class="password-wrap">
+
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+              required
+            >
+
+            <button
+              type="button"
+              class="toggle-password"
+              data-target="password"
+            >
+              Show
+            </button>
+
+          </div>
+
+        </div>
+
+        <button
+          class="btn btn-primary"
+          type="submit"
+        >
+          Login
+        </button>
+
+      </form>
+
+      <div class="auth-links">
+
+        <a href="register.html">
+          Create account
+        </a>
+
+        <a href="forgot-password.html">
+          Forgot password?
+        </a>
+
+      </div>
+
+      <div class="auth-footer">
+        Demo authentication only. Do not use real financial or sensitive information.
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="auth.js"></script>
+
+</body>
+
+</html>
