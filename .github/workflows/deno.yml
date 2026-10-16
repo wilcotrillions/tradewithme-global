@@ -2,9 +2,11 @@ name: Deno
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
   pull_request:
-    branches: ["main"]
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -22,15 +24,22 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: Run linter
-        run: deno lint
+      - name: Fix and run linter
+        run: |
+          deno lint --fix
+          deno lint
 
       - name: Run tests
         shell: bash
         run: |
           TEST_FILES=$(find . \
             -type f \
-            \( -name "*_test.ts" -o -name "*_test.tsx" -o -name "*.test.ts" -o -name "*.test.tsx" \) \
+            \( \
+              -name "*_test.ts" \
+              -o -name "*_test.tsx" \
+              -o -name "*.test.ts" \
+              -o -name "*.test.tsx" \
+            \) \
             -not -path "./.git/*" \
             -not -path "./node_modules/*")
 
