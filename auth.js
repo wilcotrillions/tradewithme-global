@@ -36,14 +36,18 @@ function saveUser(user) {
 
 function logout() {
   localStorage.removeItem(STORAGE_KEY);
-  window.location.href = "login.html";
+  if (typeof globalThis !== "undefined" && globalThis.location) {
+    globalThis.location.href = "login.html";
+  }
 }
 
 function requireLogin() {
   const user = getUser();
 
   if (!user) {
-    window.location.href = "login.html";
+    if (typeof globalThis !== "undefined" && globalThis.location) {
+      globalThis.location.href = "login.html";
+    }
     return null;
   }
 
@@ -158,8 +162,9 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         setTimeout(() => {
-          window.location.href =
-            "dashboard.html";
+          if (typeof globalThis !== "undefined" && globalThis.location) {
+            globalThis.location.href = "dashboard.html";
+          }
         }, 1000);
       }
     );
@@ -220,8 +225,9 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         setTimeout(() => {
-          window.location.href =
-            "dashboard.html";
+          if (typeof globalThis !== "undefined" && globalThis.location) {
+            globalThis.location.href = "dashboard.html";
+          }
         }, 700);
       }
     );
