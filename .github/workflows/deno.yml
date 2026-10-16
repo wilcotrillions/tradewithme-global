@@ -12,11 +12,12 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  deno:
+    name: Deno CI
     runs-on: ubuntu-latest
 
     steps:
-      - name: Setup repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Deno
@@ -24,10 +25,29 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: Fix and run linter
+      - name: Check formatting
+        run: deno fmt --check
+
+      - name: Run linter
+        run: deno lint
+
+      - name: Type check
+        shell: bash
         run: |
-          deno lint --fix
-          deno lint
+          if find . \
+            -type f \
+            \( -name "*.ts" -o -name "*.tsx" \) \
+            -not -path "./.git/*" \
+            | grep -q .; then
+            echo "TypeScript files found. Running type check..."
+            deno check --all \
+              $(find . \
+                -type f \
+                \( -name "*.ts" -o -name "*.tsx" \) \
+                -not -path "./.git/*")
+          else
+            echo "No TypeScript files found. Skipping type check."
+          fi
 
       - name: Run tests
         shell: bash
@@ -40,13 +60,15 @@ jobs:
               -o -name "*.test.ts" \
               -o -name "*.test.tsx" \
             \) \
-            -not -path "./.git/*" \
-            -not -path "./node_modules/*")
+            -not -path "./.git/*")
 
           if [ -n "$TEST_FILES" ]; then
-            echo "Test files found:"
+            echo "Test modules found:"
             echo "$TEST_FILES"
-            deno test -A
+            echo "Running tests..."
+            deno test --allow-all
           else
-            echo "No test files found. Skipping tests."
+            echo "No test modules found."
+            echo "No tests are configured yet."
+            echo "Skipping test execution."
           fi
