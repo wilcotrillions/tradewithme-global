@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-window
 const STORAGE_KEY = "tradewithme_user";
 
 function showMessage(element, message, error = false) {
