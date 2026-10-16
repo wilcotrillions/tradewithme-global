@@ -35,7 +35,7 @@ function logout() {
   }
 }
 
-function requireLogin() {
+export function requireLogin() {
   const user = getUser();
 
   if (!user) {
