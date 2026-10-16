@@ -1,311 +1,168 @@
-// deno-lint-ignore-file no-window
 const STORAGE_KEY = "tradewithme_user";
 
 function showMessage(element, message, error = false) {
   if (!element) return;
 
   element.textContent = message;
-
-  element.className = error
-    ? "message error"
-    : "message";
-
-  element.style.display = "block";
+  element.classList.toggle("error", error);
+  element.classList.toggle("success", !error);
 }
 
 function getUser() {
-  const data = localStorage.getItem(STORAGE_KEY);
-
-  if (!data) {
-    return null;
-  }
-
   try {
-    return JSON.parse(data);
-  } catch {
+    const storedUser = localStorage.getItem(STORAGE_KEY);
+
+    if (!storedUser) {
+      return null;
+    }
+
+    return JSON.parse(storedUser);
+  } catch (error) {
+    console.error("Unable to read stored user:", error);
     return null;
   }
 }
 
 function saveUser(user) {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(user)
-  );
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
 }
 
 function logout() {
   localStorage.removeItem(STORAGE_KEY);
-  window.location.href = "login.html";
+
+  if (globalThis.location) {
+    globalThis.location.href = "login.html";
+  }
 }
 
 function requireLogin() {
   const user = getUser();
 
   if (!user) {
-    window.location.href = "login.html";
+    if (globalThis.location) {
+      globalThis.location.href = "login.html";
+    }
+
     return null;
   }
 
   return user;
 }
 
-function setupPasswordToggle() {
-  document
-    .querySelectorAll(".toggle-password")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        const input = document.getElementById(
-          button.dataset.target
-        );
-
-        if (!input) return;
-
-        if (input.type === "password") {
-          input.type = "text";
-          button.textContent = "Hide";
-        } else {
-          input.type = "password";
-          button.textContent = "Show";
-        }
-      });
-    });
+function redirectToDashboard() {
+  if (globalThis.location) {
+    globalThis.location.href = "dashboard.html";
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  const logoutButtons = document.querySelectorAll(
+    '[data-action="logout"], .logout-btn',
+  );
 
-  setupPasswordToggle();
+  logoutButtons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      logout();
+    });
+  });
 
-  /* REGISTER */
-
-  const registerForm =
-    document.getElementById("registerForm");
-
-  if (registerForm) {
-
-    registerForm.addEventListener(
-      "submit",
-      event => {
-
-        event.preventDefault();
-
-        const name =
-          document.getElementById("name").value.trim();
-
-        const email =
-          document
-            .getElementById("email")
-            .value
-            .trim()
-            .toLowerCase();
-
-        const password =
-          document.getElementById("password").value;
-
-        const confirmPassword =
-          document
-            .getElementById("confirmPassword")
-            .value;
-
-        const message =
-          document.getElementById("message");
-
-        if (
-          !name ||
-          !email ||
-          !password ||
-          !confirmPassword
-        ) {
-          showMessage(
-            message,
-            "Please complete all fields.",
-            true
-          );
-          return;
-        }
-
-        if (password.length < 8) {
-          showMessage(
-            message,
-            "Password must contain at least 8 characters.",
-            true
-          );
-          return;
-        }
-
-        if (password !== confirmPassword) {
-          showMessage(
-            message,
-            "Passwords do not match.",
-            true
-          );
-          return;
-        }
-
-        const user = {
-          name: name,
-          email: email,
-          password: password
-        };
-
-        saveUser(user);
-
-        showMessage(
-          message,
-          "Account created successfully. Redirecting..."
-        );
-
-        setTimeout(() => {
-          window.location.href =
-            "dashboard.html";
-        }, 1000);
-      }
-    );
-  }
-
-  /* LOGIN */
-
-  const loginForm =
-    document.getElementById("loginForm");
+  const loginForm = document.querySelector("#loginForm");
 
   if (loginForm) {
+    loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
 
-    loginForm.addEventListener(
-      "submit",
-      event => {
+      const emailInput = document.querySelector("#email");
+      const passwordInput = document.querySelector("#password");
+      const messageElement = document.querySelector("#loginMessage");
 
-        event.preventDefault();
+      const email = emailInput?.value.trim() || "";
+      const password = passwordInput?.value || "";
 
-        const email =
-          document
-            .getElementById("email")
-            .value
-            .trim()
-            .toLowerCase();
-
-        const password =
-          document.getElementById("password").value;
-
-        const message =
-          document.getElementById("message");
-
-        const user = getUser();
-
-        if (!user) {
-          showMessage(
-            message,
-            "No demo account found. Please register first.",
-            true
-          );
-          return;
-        }
-
-        if (
-          user.email !== email ||
-          user.password !== password
-        ) {
-          showMessage(
-            message,
-            "Incorrect email or password.",
-            true
-          );
-          return;
-        }
-
+      if (!email || !password) {
         showMessage(
-          message,
-          "Login successful. Redirecting..."
+          messageElement,
+          "Please enter your email and password.",
+          true,
         );
-
-        setTimeout(() => {
-          window.location.href =
-            "dashboard.html";
-        }, 700);
+        return;
       }
-    );
+
+      const user = {
+        email,
+        loggedIn: true,
+        loginTime: new Date().toISOString(),
+      };
+
+      saveUser(user);
+
+      showMessage(
+        messageElement,
+        "Login successful. Redirecting...",
+      );
+
+      setTimeout(() => {
+        redirectToDashboard();
+      }, 1000);
+    });
   }
 
-  /* FORGOT PASSWORD */
+  const registerForm = document.querySelector("#registerForm");
 
-  const forgotForm =
-    document.getElementById("forgotForm");
+  if (registerForm) {
+    registerForm.addEventListener("submit", (event) => {
+      event.preventDefault();
 
-  if (forgotForm) {
+      const nameInput = document.querySelector("#name");
+      const emailInput = document.querySelector("#email");
+      const passwordInput = document.querySelector("#password");
+      const confirmPasswordInput =
+        document.querySelector("#confirmPassword");
 
-    forgotForm.addEventListener(
-      "submit",
-      event => {
+      const messageElement =
+        document.querySelector("#registerMessage");
 
-        event.preventDefault();
+      const name = nameInput?.value.trim() || "";
+      const email = emailInput?.value.trim() || "";
+      const password = passwordInput?.value || "";
+      const confirmPassword = confirmPasswordInput?.value || "";
 
-        const email =
-          document
-            .getElementById("email")
-            .value
-            .trim();
-
-        const message =
-          document.getElementById("message");
-
-        if (!email) {
-          showMessage(
-            message,
-            "Please enter your email.",
-            true
-          );
-          return;
-        }
-
+      if (!name || !email || !password || !confirmPassword) {
         showMessage(
-          message,
-          "Demo reset request received. Real email delivery will be connected to the backend."
+          messageElement,
+          "Please complete all required fields.",
+          true,
         );
+        return;
       }
-    );
+
+      if (password !== confirmPassword) {
+        showMessage(
+          messageElement,
+          "Passwords do not match.",
+          true,
+        );
+        return;
+      }
+
+      const user = {
+        name,
+        email,
+        loggedIn: true,
+        registeredAt: new Date().toISOString(),
+      };
+
+      saveUser(user);
+
+      showMessage(
+        messageElement,
+        "Account created successfully. Redirecting...",
+      );
+
+      setTimeout(() => {
+        redirectToDashboard();
+      }, 700);
+    });
   }
-
-  /* DASHBOARD */
-
-  const dashboard =
-    document.getElementById("dashboard");
-
-  if (dashboard) {
-
-    const user = requireLogin();
-
-    if (!user) {
-      return;
-    }
-
-    const nameElement =
-      document.getElementById("userName");
-
-    const emailElement =
-      document.getElementById("userEmail");
-
-    if (nameElement) {
-      nameElement.textContent =
-        user.name;
-    }
-
-    if (emailElement) {
-      emailElement.textContent =
-        user.email;
-    }
-  }
-
-  /* LOGOUT */
-
-  const logoutButton =
-    document.getElementById("logout");
-
-  if (logoutButton) {
-    logoutButton.addEventListener(
-      "click",
-      logout
-    );
-  }
-
 });
