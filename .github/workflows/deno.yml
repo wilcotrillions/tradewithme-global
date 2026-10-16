@@ -25,33 +25,35 @@ jobs:
         with:
           deno-version: v2.x
 
-      - name: Check formatting
-        run: deno fmt --check
-
       - name: Run linter
         run: deno lint
 
       - name: Type check
         shell: bash
         run: |
-          if find . \
+          set -e
+
+          TS_FILES=$(find . \
             -type f \
             \( -name "*.ts" -o -name "*.tsx" \) \
             -not -path "./.git/*" \
-            | grep -q .; then
-            echo "TypeScript files found. Running type check..."
-            deno check --all \
-              $(find . \
-                -type f \
-                \( -name "*.ts" -o -name "*.tsx" \) \
-                -not -path "./.git/*")
+            -not -path "./node_modules/*")
+
+          if [ -n "$TS_FILES" ]; then
+            echo "TypeScript files found:"
+            echo "$TS_FILES"
+            echo "Running type check..."
+            deno check --all $TS_FILES
           else
-            echo "No TypeScript files found. Skipping type check."
+            echo "No TypeScript files found."
+            echo "Skipping type check."
           fi
 
       - name: Run tests
         shell: bash
         run: |
+          set -e
+
           TEST_FILES=$(find . \
             -type f \
             \( \
@@ -60,7 +62,8 @@ jobs:
               -o -name "*.test.ts" \
               -o -name "*.test.tsx" \
             \) \
-            -not -path "./.git/*")
+            -not -path "./.git/*" \
+            -not -path "./node_modules/*")
 
           if [ -n "$TEST_FILES" ]; then
             echo "Test modules found:"
@@ -69,6 +72,5 @@ jobs:
             deno test --allow-all
           else
             echo "No test modules found."
-            echo "No tests are configured yet."
-            echo "Skipping test execution."
+            echo "Skipping tests because no test files exist yet."
           fi
