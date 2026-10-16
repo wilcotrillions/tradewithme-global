@@ -61,6 +61,7 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <button
+            type="button"
             onClick={() => setIsOpen(!isOpen)}
             className="md:hidden p-2 hover:bg-panel rounded-lg transition-colors"
           >
