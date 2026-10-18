@@ -1,5 +1,5 @@
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import Navbar from "../../components/layout/Navbar";
+import Footer from "../../components/layout/Footer";
 import { AlertCircle, DollarSign } from "lucide-react";
 
 const investmentCategories = [
@@ -105,7 +105,9 @@ export default function InvestmentsPage() {
         <section className="px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-6xl">
             <div className="mb-10">
-              <h2 className="text-3xl font-bold">Investment Categories</h2>
+              <h2 className="text-3xl font-bold">
+                Investment Categories
+              </h2>
 
               <p className="mt-3 max-w-3xl text-muted">
                 Build a broader understanding of different investment
@@ -140,7 +142,9 @@ export default function InvestmentsPage() {
         <section className="bg-panel px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-6xl">
             <div className="mb-10 text-center">
-              <h2 className="text-3xl font-bold">Investment Process</h2>
+              <h2 className="text-3xl font-bold">
+                Investment Process
+              </h2>
 
               <p className="mx-auto mt-3 max-w-2xl text-muted">
                 A structured approach can help investors make informed
@@ -158,7 +162,9 @@ export default function InvestmentsPage() {
                     {item.step}
                   </div>
 
-                  <h3 className="text-xl font-semibold">{item.title}</h3>
+                  <h3 className="text-xl font-semibold">
+                    {item.title}
+                  </h3>
 
                   <p className="mt-3 text-sm leading-6 text-muted">
                     {item.description}
@@ -189,7 +195,9 @@ export default function InvestmentsPage() {
         {/* Disclaimer */}
         <section className="border-t border-border bg-panel px-4 py-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-5xl">
-            <h2 className="text-lg font-semibold">Investment Disclaimer</h2>
+            <h2 className="text-lg font-semibold">
+              Investment Disclaimer
+            </h2>
 
             <p className="mt-4 text-sm leading-7 text-muted">
               The information provided by TradeWithMe Global is general in
