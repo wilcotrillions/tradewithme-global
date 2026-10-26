@@ -131,8 +131,8 @@ export function initAuth() {
         user.email === email &&
         user.password === password
       ) {
-        showMessage(messageElement, "Login successful.");
-        redirectToDashboard();
+        showMessage(messageElement, "Login successful. Redirecting...");
+        setTimeout(redirectToDashboard, 1000);
       } else {
         showMessage(
           messageElement,
@@ -198,12 +198,14 @@ export function initAuth() {
         "Registration successful. Redirecting to login..."
       );
 
-      if (
-        typeof globalThis !== "undefined" &&
-        globalThis.location
-      ) {
-        globalThis.location.href = "login.html";
-      }
+      setTimeout(() => {
+        if (
+          typeof globalThis !== "undefined" &&
+          globalThis.location
+        ) {
+          globalThis.location.href = "login.html";
+        }
+      }, 1000);
     });
   }
 
