@@ -1,317 +1,230 @@
-// deno-lint-ignore-file no-window
 const STORAGE_KEY = "tradewithme_user";
 
 function showMessage(element, message, error = false) {
   if (!element) return;
 
   element.textContent = message;
-
-  element.className = error
-    ? "message error"
-    : "message";
-
-  element.style.display = "block";
+  element.classList.toggle("error", error);
+  element.classList.toggle("success", !error);
 }
 
 function getUser() {
-  const data = localStorage.getItem(STORAGE_KEY);
-
-  if (!data) {
-    return null;
-  }
-
   try {
-    return JSON.parse(data);
-  } catch {
+    if (
+      typeof globalThis === "undefined" ||
+      !globalThis.localStorage
+    ) {
+      return null;
+    }
+
+    const storedUser =
+      globalThis.localStorage.getItem(STORAGE_KEY);
+
+    if (!storedUser) return null;
+
+    return JSON.parse(storedUser);
+  } catch (error) {
+    console.error("Unable to read stored user:", error);
     return null;
   }
 }
 
 function saveUser(user) {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(user)
-  );
+  try {
+    if (
+      typeof globalThis === "undefined" ||
+      !globalThis.localStorage
+    ) {
+      return false;
+    }
+
+    globalThis.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(user)
+    );
+
+    return true;
+  } catch (error) {
+    console.error("Unable to save user:", error);
+    return false;
+  }
 }
 
 function logout() {
-  localStorage.removeItem(STORAGE_KEY);
-  if (typeof globalThis !== "undefined" && globalThis.location) {
+  try {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.localStorage
+    ) {
+      globalThis.localStorage.removeItem(STORAGE_KEY);
+    }
+  } catch (error) {
+    console.error("Unable to clear stored user:", error);
+  }
+
+  if (
+    typeof globalThis !== "undefined" &&
+    globalThis.location
+  ) {
     globalThis.location.href = "login.html";
   }
 }
 
-function requireLogin() {
+export function requireLogin() {
   const user = getUser();
 
   if (!user) {
-    if (typeof globalThis !== "undefined" && globalThis.location) {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.location
+    ) {
       globalThis.location.href = "login.html";
     }
+
     return null;
   }
 
   return user;
 }
 
-function setupPasswordToggle() {
-  document
-    .querySelectorAll(".toggle-password")
-    .forEach(button => {
-
-      button.addEventListener("click", () => {
-
-        const input = document.getElementById(
-          button.dataset.target
-        );
-
-        if (!input) return;
-
-        if (input.type === "password") {
-          input.type = "text";
-          button.textContent = "Hide";
-        } else {
-          input.type = "password";
-          button.textContent = "Show";
-        }
-      });
-    });
+function redirectToDashboard() {
+  if (
+    typeof globalThis !== "undefined" &&
+    globalThis.location
+  ) {
+    globalThis.location.href = "dashboard.html";
+  }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-
-  setupPasswordToggle();
-
-  /* REGISTER */
-
-  const registerForm =
-    document.getElementById("registerForm");
-
-  if (registerForm) {
-
-    registerForm.addEventListener(
-      "submit",
-      event => {
-
-        event.preventDefault();
-
-        const name =
-          document.getElementById("name").value.trim();
-
-        const email =
-          document
-            .getElementById("email")
-            .value
-            .trim()
-            .toLowerCase();
-
-        const password =
-          document.getElementById("password").value;
-
-        const confirmPassword =
-          document
-            .getElementById("confirmPassword")
-            .value;
-
-        const message =
-          document.getElementById("message");
-
-        if (
-          !name ||
-          !email ||
-          !password ||
-          !confirmPassword
-        ) {
-          showMessage(
-            message,
-            "Please complete all fields.",
-            true
-          );
-          return;
-        }
-
-        if (password.length < 8) {
-          showMessage(
-            message,
-            "Password must contain at least 8 characters.",
-            true
-          );
-          return;
-        }
-
-        if (password !== confirmPassword) {
-          showMessage(
-            message,
-            "Passwords do not match.",
-            true
-          );
-          return;
-        }
-
-        const user = {
-          name: name,
-          email: email,
-          password: password
-        };
-
-        saveUser(user);
-
-        showMessage(
-          message,
-          "Account created successfully. Redirecting..."
-        );
-
-        setTimeout(() => {
-          if (typeof globalThis !== "undefined" && globalThis.location) {
-            globalThis.location.href = "dashboard.html";
-          }
-        }, 1000);
-      }
-    );
-  }
-
-  /* LOGIN */
-
-  const loginForm =
-    document.getElementById("loginForm");
+export function initAuth() {
+  const loginForm = document.getElementById("login-form");
+  const registerForm = document.getElementById("register-form");
+  const logoutButton = document.getElementById("logout-button");
 
   if (loginForm) {
+    loginForm.addEventListener("submit", (event) => {
+      event.preventDefault();
 
-    loginForm.addEventListener(
-      "submit",
-      event => {
+      const emailInput =
+        loginForm.querySelector('[name="email"]');
+      const passwordInput =
+        loginForm.querySelector('[name="password"]');
+      const messageElement =
+        loginForm.querySelector(".form-message");
 
-        event.preventDefault();
+      const email = emailInput?.value.trim().toLowerCase();
+      const password = passwordInput?.value;
 
-        const email =
-          document
-            .getElementById("email")
-            .value
-            .trim()
-            .toLowerCase();
-
-        const password =
-          document.getElementById("password").value;
-
-        const message =
-          document.getElementById("message");
-
-        const user = getUser();
-
-        if (!user) {
-          showMessage(
-            message,
-            "No demo account found. Please register first.",
-            true
-          );
-          return;
-        }
-
-        if (
-          user.email !== email ||
-          user.password !== password
-        ) {
-          showMessage(
-            message,
-            "Incorrect email or password.",
-            true
-          );
-          return;
-        }
-
+      if (!email || !password) {
         showMessage(
-          message,
-          "Login successful. Redirecting..."
+          messageElement,
+          "Please enter your email and password.",
+          true
         );
-
-        setTimeout(() => {
-          if (typeof globalThis !== "undefined" && globalThis.location) {
-            globalThis.location.href = "dashboard.html";
-          }
-        }, 700);
+        return;
       }
-    );
-  }
 
-  /* FORGOT PASSWORD */
+      const user = getUser();
 
-  const forgotForm =
-    document.getElementById("forgotForm");
-
-  if (forgotForm) {
-
-    forgotForm.addEventListener(
-      "submit",
-      event => {
-
-        event.preventDefault();
-
-        const email =
-          document
-            .getElementById("email")
-            .value
-            .trim();
-
-        const message =
-          document.getElementById("message");
-
-        if (!email) {
-          showMessage(
-            message,
-            "Please enter your email.",
-            true
-          );
-          return;
-        }
-
+      if (
+        user &&
+        user.email === email &&
+        user.password === password
+      ) {
+        showMessage(messageElement, "Login successful.");
+        redirectToDashboard();
+      } else {
         showMessage(
-          message,
-          "Demo reset request received. Real email delivery will be connected to the backend."
+          messageElement,
+          "Invalid email or password.",
+          true
         );
       }
-    );
+    });
   }
 
-  /* DASHBOARD */
+  if (registerForm) {
+    registerForm.addEventListener("submit", (event) => {
+      event.preventDefault();
 
-  const dashboard =
-    document.getElementById("dashboard");
+      const nameInput =
+        registerForm.querySelector('[name="name"]');
+      const emailInput =
+        registerForm.querySelector('[name="email"]');
+      const passwordInput =
+        registerForm.querySelector('[name="password"]');
+      const messageElement =
+        registerForm.querySelector(".form-message");
 
-  if (dashboard) {
+      const name = nameInput?.value.trim();
+      const email = emailInput?.value.trim().toLowerCase();
+      const password = passwordInput?.value;
 
-    const user = requireLogin();
+      if (!name || !email || !password) {
+        showMessage(
+          messageElement,
+          "Please complete all required fields.",
+          true
+        );
+        return;
+      }
 
-    if (!user) {
-      return;
-    }
+      if (password.length < 8) {
+        showMessage(
+          messageElement,
+          "Password must be at least 8 characters long.",
+          true
+        );
+        return;
+      }
 
-    const nameElement =
-      document.getElementById("userName");
+      const user = {
+        name,
+        email,
+        password
+      };
 
-    const emailElement =
-      document.getElementById("userEmail");
+      if (!saveUser(user)) {
+        showMessage(
+          messageElement,
+          "Unable to save your account in this browser.",
+          true
+        );
+        return;
+      }
 
-    if (nameElement) {
-      nameElement.textContent =
-        user.name;
-    }
+      showMessage(
+        messageElement,
+        "Registration successful. Redirecting to login..."
+      );
 
-    if (emailElement) {
-      emailElement.textContent =
-        user.email;
-    }
+      if (
+        typeof globalThis !== "undefined" &&
+        globalThis.location
+      ) {
+        globalThis.location.href = "login.html";
+      }
+    });
   }
-
-  /* LOGOUT */
-
-  const logoutButton =
-    document.getElementById("logout");
 
   if (logoutButton) {
-    logoutButton.addEventListener(
-      "click",
-      logout
-    );
+    logoutButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      logout();
+    });
   }
+}
 
-});
+if (
+  typeof globalThis !== "undefined" &&
+  globalThis.document
+) {
+  if (globalThis.document.readyState === "loading") {
+    globalThis.document.addEventListener(
+      "DOMContentLoaded",
+      initAuth
+    );
+  } else {
+    initAuth();
+  }
+}
