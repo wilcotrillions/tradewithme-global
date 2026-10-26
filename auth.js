@@ -1,3 +1,4 @@
+
 const STORAGE_KEY = "tradewithme_user";
 
 function showMessage(element, message, error = false) {
@@ -10,7 +11,11 @@ function showMessage(element, message, error = false) {
 
 function getUser() {
   try {
-    const storedUser = localStorage.getItem(STORAGE_KEY);
+    if (typeof globalThis === "undefined" || !globalThis.localStorage) {
+      return null;
+    }
+
+    const storedUser = globalThis.localStorage.getItem(STORAGE_KEY);
 
     if (!storedUser) {
       return null;
@@ -24,13 +29,39 @@ function getUser() {
 }
 
 function saveUser(user) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+  try {
+    if (typeof globalThis === "undefined" || !globalThis.localStorage) {
+      return false;
+    }
+
+    globalThis.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(user)
+    );
+
+    return true;
+  } catch (error) {
+    console.error("Unable to save user:", error);
+    return false;
+  }
 }
 
 function logout() {
-  localStorage.removeItem(STORAGE_KEY);
+  try {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.localStorage
+    ) {
+      globalThis.localStorage.removeItem(STORAGE_KEY);
+    }
+  } catch (error) {
+    console.error("Unable to clear stored user:", error);
+  }
 
-  if (globalThis.location) {
+  if (
+    typeof globalThis !== "undefined" &&
+    globalThis.location
+  ) {
     globalThis.location.href = "login.html";
   }
 }
@@ -39,7 +70,10 @@ export function requireLogin() {
   const user = getUser();
 
   if (!user) {
-    if (globalThis.location) {
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.location
+    ) {
       globalThis.location.href = "login.html";
     }
 
@@ -50,98 +84,100 @@ export function requireLogin() {
 }
 
 function redirectToDashboard() {
-  if (globalThis.location) {
+  if (
+    typeof globalThis !== "undefined" &&
+    globalThis.location
+  ) {
     globalThis.location.href = "dashboard.html";
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const logoutButtons = document.querySelectorAll(
-    '[data-action="logout"], .logout-btn',
-  );
-
-  logoutButtons.forEach((button) => {
-    button.addEventListener("click", (event) => {
-      event.preventDefault();
-      logout();
-    });
-  });
-
-  const loginForm = document.querySelector("#loginForm");
+export function initAuth() {
+  const loginForm = document.getElementById("login-form");
+  const registerForm = document.getElementById("register-form");
+  const logoutButton = document.getElementById("logout-button");
 
   if (loginForm) {
     loginForm.addEventListener("submit", (event) => {
       event.preventDefault();
 
-      const emailInput = document.querySelector("#email");
-      const passwordInput = document.querySelector("#password");
-      const messageElement = document.querySelector("#loginMessage");
+      const emailInput = loginForm.querySelector(
+        '[name="email"]'
+      );
+      const passwordInput = loginForm.querySelector(
+        '[name="password"]'
+      );
+      const messageElement = loginForm.querySelector(
+        ".form-message"
+      );
 
-      const email = emailInput?.value.trim() || "";
-      const password = passwordInput?.value || "";
+      const email = emailInput?.value.trim().toLowerCase();
+      const password = passwordInput?.value;
 
       if (!email || !password) {
         showMessage(
           messageElement,
           "Please enter your email and password.",
-          true,
+          true
         );
         return;
       }
 
-      const user = {
-        email,
-        loggedIn: true,
-        loginTime: new Date().toISOString(),
-      };
+      const user = getUser();
 
-      saveUser(user);
+      if (
+        user &&
+        user.email === email &&
+        user.password === password
+      ) {
+        showMessage(messageElement, "Login successful.");
 
-      showMessage(
-        messageElement,
-        "Login successful. Redirecting...",
-      );
-
-      setTimeout(() => {
         redirectToDashboard();
-      }, 1000);
+      } else {
+        showMessage(
+          messageElement,
+          "Invalid email or password.",
+          true
+        );
+      }
     });
   }
-
-  const registerForm = document.querySelector("#registerForm");
 
   if (registerForm) {
     registerForm.addEventListener("submit", (event) => {
       event.preventDefault();
 
-      const nameInput = document.querySelector("#name");
-      const emailInput = document.querySelector("#email");
-      const passwordInput = document.querySelector("#password");
-      const confirmPasswordInput =
-        document.querySelector("#confirmPassword");
+      const nameInput = registerForm.querySelector(
+        '[name="name"]'
+      );
+      const emailInput = registerForm.querySelector(
+        '[name="email"]'
+      );
+      const passwordInput = registerForm.querySelector(
+        '[name="password"]'
+      );
+      const messageElement = registerForm.querySelector(
+        ".form-message"
+      );
 
-      const messageElement =
-        document.querySelector("#registerMessage");
+      const name = nameInput?.value.trim();
+      const email = emailInput?.value.trim().toLowerCase();
+      const password = passwordInput?.value;
 
-      const name = nameInput?.value.trim() || "";
-      const email = emailInput?.value.trim() || "";
-      const password = passwordInput?.value || "";
-      const confirmPassword = confirmPasswordInput?.value || "";
-
-      if (!name || !email || !password || !confirmPassword) {
+      if (!name || !email || !password) {
         showMessage(
           messageElement,
           "Please complete all required fields.",
-          true,
+          true
         );
         return;
       }
 
-      if (password !== confirmPassword) {
+      if (password.length < 8) {
         showMessage(
           messageElement,
-          "Passwords do not match.",
-          true,
+          "Password must be at least 8 characters long.",
+          true
         );
         return;
       }
@@ -149,20 +185,47 @@ document.addEventListener("DOMContentLoaded", () => {
       const user = {
         name,
         email,
-        loggedIn: true,
-        registeredAt: new Date().toISOString(),
+        password
       };
 
-      saveUser(user);
+      if (!saveUser(user)) {
+        showMessage(
+          messageElement,
+          "Unable to save your account in this browser.",
+          true
+        );
+        return;
+      }
 
       showMessage(
         messageElement,
-        "Account created successfully. Redirecting...",
+        "Registration successful. Redirecting to login..."
       );
 
-      setTimeout(() => {
-        redirectToDashboard();
-      }, 700);
+      if (typeof globalThis !== "undefined" && globalThis.location) {
+        globalThis.location.href = "login.html";
+      }
     });
   }
-});
+
+  if (logoutButton) {
+    logoutButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      logout();
+    });
+  }
+}
+
+if (
+  typeof globalThis !== "undefined" &&
+  globalThis.document
+) {
+  if (globalThis.document.readyState === "loading") {
+    globalThis.document.addEventListener(
+      "DOMContentLoaded",
+      initAuth
+    );
+  } else {
+    initAuth();
+  }
+}
