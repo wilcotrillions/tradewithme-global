@@ -1,13 +1,20 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "tradewithme-global",
-  "main": ".open-next/worker.js",
-  "compatibility_date": "2026-10-18",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
-  "assets": {
-    "directory": ".open-next/assets",
-    "binding": "ASSETS"
-  }
+"$schema": "node_modules/wrangler/config-schema.json",
+"name": "tradewithme-global",
+"main": ".open-next/worker.js",
+"compatibility_date": "2026-10-18",
+"compatibility_flags": [
+"nodejs_compat"
+],
+"assets": {
+"directory": ".open-next/assets",
+"binding": "ASSETS"
+},
+"d1_databases": [
+{
+"binding": "DB",
+"database_name": "tradewithme-global-db",
+"database_id": "ef5c633d-4ae9-42b9-8fd5-f4036cc91a08"
+}
+]
 }
