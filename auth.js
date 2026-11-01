@@ -1,9 +1,16 @@
-/*
- * Legacy browser authentication disabled.
- * Authentication is now handled by secure server-side API routes.
- */
+function clearLegacyCredentials() {
+  try {
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('tradewithme_user');
+    }
+  } catch {
+    // Ignore unavailable browser storage.
+  }
+}
 
 export function initAuth() {
+  clearLegacyCredentials();
+
   if (typeof window !== 'undefined') {
     window.location.replace('/login');
   }
@@ -23,7 +30,7 @@ export async function logout() {
   try {
     await fetch('/api/auth/logout', {
       method: 'POST',
-      credentials: 'same-origin',
+      credentials: 'same-origin'
     });
   } finally {
     window.location.replace('/login');
