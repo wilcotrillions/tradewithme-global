@@ -1,17 +1,56 @@
-name: Deno
+name: TradeWithMe Global CI
 
 on:
   push:
     branches:
       - main
+      - "repair/**"
+      - "fix/**"
+
   pull_request:
     branches:
       - main
+
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
+  nextjs:
+    name: Next.js Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Validate package configuration
+        run: |
+          node -e "JSON.parse(require('fs').readFileSync('package.json', 'utf8'))"
+          if [ ! -f package-lock.json ]; then
+            echo "ERROR: package-lock.json is missing."
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Check TypeScript
+        run: npx tsc --noEmit
+
+      - name: Build Next.js application
+        run: npm run build
+
   deno:
     name: Deno CI
     runs-on: ubuntu-latest
