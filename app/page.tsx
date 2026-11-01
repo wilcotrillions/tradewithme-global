@@ -1,186 +1,118 @@
-import Navbar from '../components/layout/Navbar';
-import Footer from '../components/layout/Footer';
-import { ArrowRight, BarChart3, Users, BookOpen, TrendingUp, Shield, Zap } from 'lucide-react';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
+import { getCurrentUser } from '../../lib/auth';
 
-const features = [
+export const dynamic = 'force-dynamic';
+
+export const metadata = {
+  title: 'Dashboard | TradeWithMe Global',
+  description: 'Your secure TradeWithMe Global member dashboard.',
+};
+
+const dashboardCards = [
   {
-    icon: BarChart3,
-    title: 'Advanced Trading',
-    description: 'Real-time market analysis, professional charting tools, and expert insights.',
+    title: 'Trading Hub',
+    description: 'Explore financial market education and trading resources.',
+    href: '/trading',
   },
   {
-    icon: Users,
-    title: 'Expert Mentors',
-    description: 'Learn from experienced traders and investment professionals.',
-  },
-  {
-    icon: BookOpen,
-    title: 'Comprehensive Academy',
-    description: 'Structured courses from beginner to advanced levels.',
-  },
-  {
-    icon: TrendingUp,
     title: 'Investment Education',
-    description: 'Understand risk management and portfolio building.',
+    description: 'Learn about investment planning and risk management.',
+    href: '/investments',
   },
   {
-    icon: Shield,
-    title: 'Secure Platform',
-    description: 'Your data and security are our top priorities.',
+    title: 'Trading Academy',
+    description: 'Continue learning about financial markets and trading.',
+    href: '/academy',
   },
   {
-    icon: Zap,
-    title: 'Community Support',
-    description: 'Connect with traders worldwide and share knowledge.',
+    title: 'Account',
+    description: 'Manage your member account and personal information.',
+    href: '/account',
   },
 ];
 
-export default function Home() {
+export default async function DashboardPage() {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect('/login');
+  }
+
+  const fullName = [user.first_name, user.last_name]
+    .filter(Boolean)
+    .join(' ');
+
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-background">
-        {/* Hero Section */}
-        <section className="relative px-4 sm:px-6 lg:px-8 py-20 md:py-32">
-          <div className="mx-auto max-w-7xl text-center">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-foreground">
-              Master Trading &amp; Investment
-              <span className="text-primary"> with Confidence</span>
-            </h1>
-            <p className="text-lg sm:text-xl text-muted max-w-2xl mx-auto mb-8">
-              Join thousands of traders learning from expert mentors on a secure, professional platform. No guarantees, just education and community.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-              <Link
-                href="/register"
-                className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 bg-primary text-background rounded-lg hover:bg-primary/80 transition-colors font-semibold"
-              >
-                Get Started <ArrowRight size={18} />
-              </Link>
-              <Link
-                href="/trading"
-                className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 border border-primary text-primary rounded-lg hover:bg-primary/10 transition-colors font-semibold"
-              >
-                Explore Trading
-              </Link>
-            </div>
-          </div>
-        </section>
 
-        {/* Features Section */}
-        <section className="px-4 sm:px-6 lg:px-8 py-16 md:py-24 bg-panelAlt">
-          <div className="mx-auto max-w-7xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">
-              Why Choose TradeWithMe?
-            </h2>
-            <p className="text-center text-muted mb-16 max-w-2xl mx-auto">
-              A complete ecosystem designed for traders and investors at every level.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {features.map((feature) => {
-                const Icon = feature.icon;
-                return (
-                  <div
-                    key={feature.title}
-                    className="p-6 bg-panel border border-border rounded-lg hover:border-primary/50 transition-colors"
-                  >
-                    <Icon className="w-10 h-10 text-primary mb-4" />
-                    <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                    <p className="text-sm text-muted">{feature.description}</p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
+      <main className="min-h-screen bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
+            <div>
+              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+                Member Dashboard
+              </p>
 
-        {/* Platform Overview */}
-        <section className="px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-          <div className="mx-auto max-w-7xl">
-            <h2 className="text-3xl md:text-4xl font-bold mb-12">Our Platform</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Link
-                href="/trading"
-                className="p-8 bg-panel border border-border rounded-lg hover:border-primary/50 transition-all hover:shadow-lg group"
+              <h1 className="text-3xl font-bold sm:text-4xl">
+                Welcome back{fullName ? `, ${fullName}` : ''}
+              </h1>
+
+              <p className="mt-3 text-sm text-muted">
+                You are signed in as {user.email}
+              </p>
+            </div>
+
+            <form action="/api/auth/logout" method="POST">
+              <button
+                type="submit"
+                className="rounded-lg border border-border px-5 py-3 text-sm font-semibold transition hover:border-primary hover:text-primary"
               >
-                <BarChart3 className="w-12 h-12 text-primary mb-4 group-hover:scale-110 transition-transform" />
-                <h3 className="text-xl font-semibold mb-2">Trading Hub</h3>
-                <p className="text-sm text-muted mb-4">
-                  Professional trading tools, market data, and analysis for demo trading.
+                Sign Out
+              </button>
+            </form>
+          </div>
+
+          <div className="mb-8 rounded-xl border border-border bg-panel p-6">
+            <h2 className="text-xl font-bold">Your account is active</h2>
+
+            <p className="mt-2 text-sm leading-7 text-muted">
+              Welcome to TradeWithMe Global. Explore the learning resources
+              and financial market education available on the platform.
+            </p>
+          </div>
+
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            {dashboardCards.map((card) => (
+              <Link
+                key={card.title}
+                href={card.href}
+                className="rounded-xl border border-border bg-panel p-6 transition hover:-translate-y-1 hover:border-primary/50"
+              >
+                <h2 className="text-lg font-bold">{card.title}</h2>
+
+                <p className="mt-3 text-sm leading-7 text-muted">
+                  {card.description}
                 </p>
-                <span className="text-primary text-sm font-semibold group-hover:translate-x-2 inline-flex items-center gap-1 transition-transform">
-                  Learn more <ArrowRight size={16} />
+
+                <span className="mt-5 inline-block text-sm font-semibold text-primary">
+                  Explore →
                 </span>
               </Link>
-
-              <Link
-                href="/investments"
-                className="p-8 bg-panel border border-border rounded-lg hover:border-primary/50 transition-all hover:shadow-lg group"
-              >
-                <TrendingUp className="w-12 h-12 text-primary mb-4 group-hover:scale-110 transition-transform" />
-                <h3 className="text-xl font-semibold mb-2">Investments</h3>
-                <p className="text-sm text-muted mb-4">
-                  Explore investment education and portfolio management principles.
-                </p>
-                <span className="text-primary text-sm font-semibold group-hover:translate-x-2 inline-flex items-center gap-1 transition-transform">
-                  Learn more <ArrowRight size={16} />
-                </span>
-              </Link>
-
-              <Link
-                href="/academy"
-                className="p-8 bg-panel border border-border rounded-lg hover:border-primary/50 transition-all hover:shadow-lg group"
-              >
-                <BookOpen className="w-12 h-12 text-primary mb-4 group-hover:scale-110 transition-transform" />
-                <h3 className="text-xl font-semibold mb-2">Academy</h3>
-                <p className="text-sm text-muted mb-4">
-                  Structured courses and learning paths for all skill levels.
-                </p>
-                <span className="text-primary text-sm font-semibold group-hover:translate-x-2 inline-flex items-center gap-1 transition-transform">
-                  Learn more <ArrowRight size={16} />
-                </span>
-              </Link>
-            </div>
+            ))}
           </div>
-        </section>
 
-        {/* Risk Disclosure */}
-        <section className="px-4 sm:px-6 lg:px-8 py-16 bg-panelAlt border-t border-border">
-          <div className="mx-auto max-w-4xl p-6 bg-panel border border-warning/30 rounded-lg">
-            <h3 className="text-lg font-semibold text-warning mb-2">
-              ⚠️ Risk Disclosure
-            </h3>
-            <p className="text-sm text-muted">
-              Trading and investing involve substantial risk of loss. Past performance does not guarantee future results. This platform is for educational purposes only. Always do your own research and consult with qualified financial advisors before making investment decisions. Never invest more than you can afford to lose.
-            </p>
-            <Link
-              href="/risk-disclosure"
-              className="text-primary text-sm font-semibold mt-3 inline-block hover:underline"
-            >
-              View Full Risk Disclosure
-            </Link>
-          </div>
-        </section>
-
-        {/* CTA Section */}
-        <section className="px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-          <div className="mx-auto max-w-4xl text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">
-              Ready to Start Learning?
-            </h2>
-            <p className="text-lg text-muted mb-8">
-              Join our community of traders and investors today.
-            </p>
-            <Link
-              href="/register"
-              className="inline-flex items-center gap-2 px-8 py-3 bg-primary text-background rounded-lg hover:bg-primary/80 transition-colors font-semibold"
-            >
-              Create Your Account <ArrowRight size={18} />
-            </Link>
-          </div>
-        </section>
+          <p className="mt-10 text-xs leading-6 text-muted">
+            Trading forex, cryptocurrencies, and other financial instruments
+            involves risk. Educational content on this platform is not
+            personalized financial advice.
+          </p>
+        </div>
       </main>
+
       <Footer />
     </>
   );
