@@ -1,123 +1,206 @@
-import Link from 'next/link';
-import { Mail, Phone, MapPin, Linkedin, Twitter, Facebook } from 'lucide-react';
+
+import Link from "next/link";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Linkedin,
+  Twitter,
+  Facebook,
+} from "lucide-react";
+
+const platformLinks = [
+  { label: "Trading", href: "/trading" },
+  { label: "Investments", href: "/investments" },
+  { label: "Academy", href: "/academy" },
+  { label: "Mentors", href: "/mentors" },
+];
+
+const resourceLinks = [
+  { label: "FAQ", href: "/faq" },
+  { label: "Contact", href: "/contact" },
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms & Conditions", href: "/terms" },
+];
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="border-t border-border bg-panelAlt">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-          {/* Company Info */}
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+
+        {/* Main Footer */}
+        <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-4">
+
+          {/* Company Information */}
           <div>
-            <div className="flex items-center gap-2 font-bold text-lg text-primary mb-4">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-background text-sm font-bold">
+            <Link
+              href="/"
+              aria-label="TradeWithMe Global homepage"
+              className="mb-4 flex items-center gap-2 text-lg font-bold text-primary"
+            >
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-background">
                 TWM
-              </div>
-              <span>TradeWithMe</span>
-            </div>
-            <p className="text-sm text-muted mb-4">
-              Professional trading education and investment platform. Learn, grow, and succeed together.
+              </span>
+              <span>TradeWithMe Global</span>
+            </Link>
+
+            <p className="mb-4 text-sm leading-6 text-muted">
+              Professional trading education and investment resources.
+              Learn about financial markets, develop your knowledge,
+              and understand responsible risk management.
             </p>
           </div>
 
-          {/* Quick Links */}
+          {/* Platform Links */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Platform</h3>
-            <ul className="space-y-2 text-sm text-muted">
-              <li>
-                <Link href="/trading" className="hover:text-primary transition-colors">
-                  Trading
-                </Link>
-              </li>
-              <li>
-                <Link href="/investments" className="hover:text-primary transition-colors">
-                  Investments
-                </Link>
-              </li>
-              <li>
-                <Link href="/academy" className="hover:text-primary transition-colors">
-                  Academy
-                </Link>
-              </li>
-              <li>
-                <Link href="/mentors" className="hover:text-primary transition-colors">
-                  Mentors
-                </Link>
-              </li>
+            <h3 className="mb-4 font-semibold text-foreground">
+              Platform
+            </h3>
+
+            <ul className="space-y-3 text-sm text-muted">
+              {platformLinks.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="transition-colors hover:text-primary"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Resources */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Resources</h3>
-            <ul className="space-y-2 text-sm text-muted">
-              <li>
-                <Link href="/faq" className="hover:text-primary transition-colors">
-                  FAQ
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-primary transition-colors">
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy-policy" className="hover:text-primary transition-colors">
-                  Privacy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" className="hover:text-primary transition-colors">
-                  Terms
-                </Link>
-              </li>
+            <h3 className="mb-4 font-semibold text-foreground">
+              Resources
+            </h3>
+
+            <ul className="space-y-3 text-sm text-muted">
+              {resourceLinks.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="transition-colors hover:text-primary"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Contact Information */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Contact</h3>
-            <ul className="space-y-3 text-sm text-muted">
-              <li className="flex items-center gap-2">
-                <Mail size={16} className="text-primary" />
-                <a href="mailto:support@tradewithme.global" className="hover:text-primary transition-colors">
+            <h3 className="mb-4 font-semibold text-foreground">
+              Contact
+            </h3>
+
+            <ul className="space-y-4 text-sm text-muted">
+
+              <li className="flex items-start gap-3">
+                <Mail
+                  size={18}
+                  className="mt-0.5 shrink-0 text-primary"
+                  aria-hidden="true"
+                />
+
+                <a
+                  href="mailto:support@tradewithme.global"
+                  className="break-all transition-colors hover:text-primary"
+                >
                   support@tradewithme.global
                 </a>
               </li>
-              <li className="flex items-center gap-2">
-                <Phone size={16} className="text-primary" />
-                <a href="tel:+1234567890" className="hover:text-primary transition-colors">
-                  +1 (234) 567-890
-                </a>
+
+              <li className="flex items-start gap-3">
+                <Phone
+                  size={18}
+                  className="mt-0.5 shrink-0 text-primary"
+                  aria-hidden="true"
+                />
+
+                <span>
+                  Contact us by email for assistance.
+                </span>
               </li>
-              <li className="flex items-center gap-2">
-                <MapPin size={16} className="text-primary" />
-                <span>Global</span>
+
+              <li className="flex items-start gap-3">
+                <MapPin
+                  size={18}
+                  className="mt-0.5 shrink-0 text-primary"
+                  aria-hidden="true"
+                />
+
+                <span>Serving a global audience</span>
               </li>
+
             </ul>
           </div>
         </div>
 
-        {/* Social Links & Copyright */}
+        {/* Social Links and Copyright */}
         <div className="border-t border-border pt-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="flex items-center gap-4 mb-4 md:mb-0">
-              <a href="#" className="text-muted hover:text-primary transition-colors">
-                <Twitter size={18} />
+
+          <div className="flex flex-col items-center justify-between gap-5 md:flex-row">
+
+            {/* Social Media */}
+            <div className="flex items-center gap-5">
+
+              <a
+                href="https://twitter.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Twitter"
+                className="text-muted transition-colors hover:text-primary"
+              >
+                <Twitter size={20} />
               </a>
-              <a href="#" className="text-muted hover:text-primary transition-colors">
-                <Linkedin size={18} />
+
+              <a
+                href="https://www.linkedin.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+                className="text-muted transition-colors hover:text-primary"
+              >
+                <Linkedin size={20} />
               </a>
-              <a href="#" className="text-muted hover:text-primary transition-colors">
-                <Facebook size={18} />
+
+              <a
+                href="https://www.facebook.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+                className="text-muted transition-colors hover:text-primary"
+              >
+                <Facebook size={20} />
               </a>
+
             </div>
-            <p className="text-sm text-muted text-center md:text-right">
+
+            {/* Copyright */}
+            <p className="text-center text-sm text-muted md:text-right">
               © {currentYear} TradeWithMe Global. All rights reserved.
             </p>
+
           </div>
         </div>
+
+        {/* Risk Disclaimer */}
+        <div className="mt-8 border-t border-border pt-6">
+          <p className="text-center text-xs leading-6 text-muted">
+            Trading and investing involve financial risk. You may lose
+            some or all of your invested capital. Past performance does
+            not guarantee future results. All website content is provided
+            for general educational purposes and should not be considered
+            personalized financial or investment advice.
+          </p>
+        </div>
+
       </div>
     </footer>
   );
