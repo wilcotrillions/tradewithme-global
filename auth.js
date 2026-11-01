@@ -1,47 +1,71 @@
-function clearLegacyCredentials() {
+/**
+ * Safe check for globalThis availability (handles SSR, Node.js, and browser environments).
+ */
+const isBrowser = typeof globalThis !== 'undefined';
+
+/**
+ * Safely removes legacy credentials from localStorage if available.
+ */
+export function clearLegacyCredentials(): void {
   try {
-    if (typeof globalThis !== 'undefined' &&
-        typeof globalThis.localStorage !== 'undefined') {
+    if (isBrowser && typeof globalThis.localStorage !== 'undefined') {
       globalThis.localStorage.removeItem('tradewithme_user');
     }
   } catch {
-    // Ignore unavailable browser storage.
+    // Ignore unavailable browser storage (e.g., restricted iframe, private mode errors).
   }
 }
 
-function redirectToLogin() {
-  if (
-    typeof globalThis !== 'undefined' &&
-    typeof globalThis.location !== 'undefined'
-  ) {
-    globalThis.location.replace('/login');
+/**
+ * Redirects the current window location to the login page.
+ * @param path Optional custom login path (defaults to '/login').
+ */
+export function redirectToLogin(path: string = '/login'): void {
+  if (isBrowser && typeof globalThis.location !== 'undefined') {
+    globalThis.location.replace(path);
   }
 }
 
-export function initAuth() {
+/**
+ * Initializes authentication state by clearing legacy items and redirecting to login.
+ */
+export function initAuth(): void {
   clearLegacyCredentials();
   redirectToLogin();
 }
 
-export function requireLogin() {
+/**
+ * Enforces login by redirecting immediately.
+ * Returns null to satisfy conditional rendering or guard returns.
+ */
+export function requireLogin(): null {
   redirectToLogin();
   return null;
 }
 
-export async function logout() {
-  if (
-    typeof globalThis === 'undefined' ||
-    typeof globalThis.location === 'undefined'
-  ) {
+/**
+ * Performs a secure logout by calling the backend API and redirecting.
+ * Ensures local redirection happens even if the network request fails.
+ */
+export async function logout(): Promise<void> {
+  if (!isBrowser || typeof globalThis.location === 'undefined') {
     return;
   }
 
   try {
-    await globalThis.fetch('/api/auth/logout', {
-      method: 'POST',
-      credentials: 'same-origin'
-    });
+    if (typeof globalThis.fetch === 'function') {
+      await globalThis.fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+  } catch (error) {
+    console.error('Logout request failed, proceeding with local cleanup:', error);
   } finally {
+    clearLegacyCredentials();
     globalThis.location.replace('/login');
   }
 }
