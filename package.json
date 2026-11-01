@@ -1,32 +1,217 @@
-{
-  "name": "tradewithme-global",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint .",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy"
-  },
-  "dependencies": {
-    "lucide-react": "^0.468.0",
-    "next": "^15.1.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
-  "devDependencies": {
-    "@opennextjs/cloudflare": "^1.0.0",
-    "@types/node": "^22.10.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "autoprefixer": "^10.4.20",
-    "eslint": "^9.0.0",
-    "eslint-config-next": "^15.1.0",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.17",
-    "typescript": "^5.7.2",
-    "wrangler": "^4.0.0"
-  }
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Menu, X } from 'lucide-react';
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/trading', label: 'Trading' },
+  { href: '/investments', label: 'Investments' },
+  { href: '/academy', label: 'Academy' },
+  { href: '/mentors', label: 'Mentors' },
+  { href: '/community', label: 'Community' },
+  { href: '/faq', label: 'FAQ' },
+  { href: '/contact', label: 'Contact' },
+];
+
+export default function Navbar() {
+  const pathname = usePathname();
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const previousOverflowRef = useRef('');
+
+  const closeMenu = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
+  const toggleMenu = useCallback(() => {
+    setIsOpen((previous) => !previous);
+  }, []);
+
+  const isActive = useCallback(
+    (href: string) => {
+      if (href === '/') {
+        return pathname === '/';
+      }
+
+      return pathname === href || pathname.startsWith(`${href}/`);
+    },
+    [pathname]
+  );
+
+  // Close menu when route changes.
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
+  // Handle keyboard navigation and background scrolling.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    previousOverflowRef.current = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = previousOverflowRef.current;
+    };
+  }, [isOpen]);
+
+  const linkClasses = (href: string) =>
+    `whitespace-nowrap text-sm font-semibold transition-colors duration-200 ${
+      isActive(href)
+        ? 'text-amber-400'
+        : 'text-gray-300 hover:text-amber-400'
+    }`;
+
+  const mobileLinkClasses = (href: string) =>
+    `block rounded-lg px-4 py-3 text-base font-medium transition-colors duration-200 ${
+      isActive(href)
+        ? 'bg-amber-400/10 text-amber-400'
+        : 'text-gray-300 hover:bg-white/5 hover:text-amber-400'
+    }`;
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#080b14]/95 text-white shadow-lg backdrop-blur-xl">
+
+      <nav
+        aria-label="Main navigation"
+        className="mx-auto flex min-h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
+      >
+
+        {/* Brand */}
+        <Link
+          href="/"
+          onClick={closeMenu}
+          aria-label="TradeWithMe Global homepage"
+          className="flex shrink-0 items-center"
+        >
+          <span className="text-xl font-extrabold tracking-tight sm:text-2xl">
+            TradeWithMe
+            <span className="text-amber-400"> Global</span>
+          </span>
+        </Link>
+
+        {/* Desktop Navigation */}
+        <div className="hidden items-center gap-5 lg:flex xl:gap-7">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              aria-current={isActive(link.href) ? 'page' : undefined}
+              className={linkClasses(link.href)}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+
+        {/* Desktop Authentication */}
+        <div className="hidden items-center gap-3 lg:flex">
+          <Link
+            href="/login"
+            className="rounded-lg px-4 py-2 text-sm font-semibold text-gray-200 transition-colors hover:text-amber-400"
+          >
+            Login
+          </Link>
+
+          <Link
+            href="/register"
+            className="rounded-lg bg-amber-400 px-5 py-2.5 text-sm font-bold text-gray-950 transition-colors hover:bg-amber-300 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-[#080b14]"
+          >
+            Sign Up
+          </Link>
+        </div>
+
+        {/* Mobile Menu Toggle */}
+        <button
+          ref={menuButtonRef}
+          type="button"
+          onClick={toggleMenu}
+          aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={isOpen}
+          aria-controls="mobile-navigation"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-white transition-colors hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-amber-400 lg:hidden"
+        >
+          {isOpen ? (
+            <X size={24} aria-hidden="true" />
+          ) : (
+            <Menu size={24} aria-hidden="true" />
+          )}
+        </button>
+      </nav>
+
+      {/* Mobile Navigation */}
+      <div
+        id="mobile-navigation"
+        aria-label="Mobile navigation"
+        aria-hidden={!isOpen}
+        inert={!isOpen}
+        className={`overflow-y-auto border-t border-white/10 bg-[#080b14] transition-[max-height,opacity] duration-300 ease-in-out lg:hidden ${
+          isOpen
+            ? 'max-h-[calc(100dvh-5rem)] opacity-100'
+            : 'pointer-events-none max-h-0 opacity-0'
+        }`}
+      >
+        <div className="mx-auto flex max-w-7xl flex-col px-4 py-5 sm:px-6">
+
+          {/* Mobile Navigation Links */}
+          <div className="flex flex-col gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={closeMenu}
+                aria-current={isActive(link.href) ? 'page' : undefined}
+                className={mobileLinkClasses(link.href)}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Mobile Authentication */}
+          <div className="mt-5 flex flex-col gap-3 border-t border-white/10 pt-5">
+
+            <Link
+              href="/login"
+              onClick={closeMenu}
+              className="rounded-lg border border-white/15 px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-white/5"
+            >
+              Login
+            </Link>
+
+            <Link
+              href="/register"
+              onClick={closeMenu}
+              className="rounded-lg bg-amber-400 px-4 py-3 text-center text-sm font-bold text-gray-950 transition-colors hover:bg-amber-300"
+            >
+              Create Account
+            </Link>
+
+          </div>
+
+          {/* Footer */}
+          <p className="mt-6 text-center text-xs text-gray-500">
+            © {new Date().getFullYear()} TradeWithMe Global. All rights reserved.
+          </p>
+
+        </div>
+      </div>
+
+    </header>
+  );
 }
