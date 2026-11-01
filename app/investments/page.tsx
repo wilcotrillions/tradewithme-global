@@ -1,3 +1,4 @@
+
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { AlertCircle, DollarSign } from "lucide-react";
@@ -58,7 +59,7 @@ export default function InvestmentsPage() {
       <Navbar />
 
       <main className="min-h-screen bg-background">
-        {/* Hero */}
+        {/* Hero Section */}
         <section className="border-b border-border bg-panel">
           <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
             <div className="max-w-4xl">
@@ -90,8 +91,8 @@ export default function InvestmentsPage() {
                 </h2>
 
                 <p className="mt-2 text-sm leading-6 text-muted">
-                  All investments carry risk, including the potential loss of
-                  principal. Past performance does not guarantee future
+                  All investments carry risk, including the potential loss
+                  of principal. Past performance does not guarantee future
                   results. The information provided on this website is for
                   general educational purposes and should not be considered
                   personalized financial advice.
@@ -192,7 +193,7 @@ export default function InvestmentsPage() {
           </div>
         </section>
 
-        {/* Disclaimer */}
+        {/* Investment Disclaimer */}
         <section className="border-t border-border bg-panel px-4 py-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-5xl">
             <h2 className="text-lg font-semibold">
@@ -201,13 +202,13 @@ export default function InvestmentsPage() {
 
             <p className="mt-4 text-sm leading-7 text-muted">
               The information provided by TradeWithMe Global is general in
-              nature and is provided for educational purposes only. It is not
-              intended to constitute financial, investment, legal or tax
-              advice. Financial markets involve significant risk and you may
-              lose some or all of your invested capital. Past performance is
-              not a reliable indicator of future results. Consider seeking
-              independent professional advice before making an investment
-              decision.
+              nature and is provided for educational purposes only. It is
+              not intended to constitute financial, investment, legal or
+              tax advice. Financial markets involve significant risk and
+              you may lose some or all of your invested capital. Past
+              performance is not a reliable indicator of future results.
+              Consider seeking independent professional advice before
+              making an investment decision.
             </p>
           </div>
         </section>
