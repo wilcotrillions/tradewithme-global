@@ -1,71 +1,134 @@
 /**
- * Safe check for globalThis availability (handles SSR, Node.js, and browser environments).
+ * TraderWithMeGlobal Authentication
+ *
+ * Frontend authentication helpers.
+ * Cloudflare D1 is accessed through server-side API routes.
+ * Authentication sessions must use secure HttpOnly cookies.
  */
-const isBrowser = typeof globalThis !== 'undefined';
+
+const isBrowser =
+  typeof window !== "undefined" &&
+  typeof window.location !== "undefined";
+
+const LOGIN_PATH = "/login";
+const SESSION_ENDPOINT = "/api/auth/session";
+const LOGOUT_ENDPOINT = "/api/auth/logout";
 
 /**
- * Safely removes legacy credentials from localStorage if available.
+ * Remove obsolete legacy credentials.
  */
 export function clearLegacyCredentials() {
+  if (!isBrowser) return;
+
   try {
-    if (isBrowser && typeof globalThis.localStorage !== 'undefined') {
-      globalThis.localStorage.removeItem('tradewithme_user');
-    }
-  } catch {
-    // Ignore unavailable browser storage (e.g., restricted iframe, private mode errors).
+    window.localStorage.removeItem("tradewithme_user");
+  } catch (error) {
+    console.error("Legacy credential cleanup failed:", error);
   }
 }
 
 /**
- * Redirects the current window location to the login page.
- * @param path Optional custom login path (defaults to '/login').
+ * Safely redirect to a same-origin page.
  */
-export function redirectToLogin(path = '/login') {
-  if (isBrowser && typeof globalThis.location !== 'undefined') {
-    globalThis.location.replace(path);
+export function redirectToLogin(path = LOGIN_PATH) {
+  if (!isBrowser) return;
+
+  try {
+    const destination = new URL(path, window.location.origin);
+
+    if (destination.origin !== window.location.origin) {
+      window.location.replace(LOGIN_PATH);
+      return;
+    }
+
+    window.location.replace(
+      destination.pathname + destination.search + destination.hash
+    );
+  } catch {
+    window.location.replace(LOGIN_PATH);
   }
 }
 
 /**
- * Initializes authentication state by clearing legacy items and redirecting to login.
+ * Initialize authentication utilities.
  */
 export function initAuth() {
   clearLegacyCredentials();
-  redirectToLogin();
 }
 
 /**
- * Enforces login by redirecting immediately.
- * Returns null to satisfy conditional rendering or guard returns.
+ * Retrieve the current authenticated session.
+ * The server validates the HttpOnly session cookie.
  */
-export function requireLogin() {
-  redirectToLogin();
-  return null;
-}
-
-/**
- * Performs a secure logout by calling the backend API and redirecting.
- * Ensures local redirection happens even if the network request fails.
- */
-export async function logout() {
-  if (!isBrowser || typeof globalThis.location === 'undefined') {
-    return;
-  }
+export async function getAuthSession() {
+  if (!isBrowser) return null;
 
   try {
-    if (typeof globalThis.fetch === 'function') {
-      await globalThis.fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'same-origin',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+    const response = await fetch(SESSION_ENDPOINT, {
+      method: "GET",
+      credentials: "same-origin",
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) return null;
+
+    const session = await response.json();
+
+    if (session.authenticated !== true) {
+      return null;
     }
+
+    return session;
   } catch (error) {
-    console.error('Logout request failed, proceeding with local cleanup:', error);
-  } finally {
+    console.error("Session verification failed:", error);
+    return null;
+  }
+}
+
+/**
+ * Protect a page by checking the server-validated session.
+ *
+ * Returns the authenticated session or redirects to login.
+ */
+export async function requireLogin() {
+  const session = await getAuthSession();
+
+  if (!session) {
+    redirectToLogin();
+    return null;
+  }
+
+  return session;
+}
+
+/**
+ * Secure logout through the Cloudflare backend.
+ */
+export async function logout() {
+  if (!isBrowser) return false;
+
+  try {
+    const response = await fetch(LOGOUT_ENDPOINT, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Server logout failed: " + response.status);
+    }
+
     clearLegacyCredentials();
-    globalThis.location.replace('/login');
+    redirectToLogin();
+
+    return true;
+  } catch (error) {
+    console.error("Logout failed:", error);
+    throw error;
   }
 }
