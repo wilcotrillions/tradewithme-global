@@ -6,7 +6,7 @@ const isBrowser = typeof globalThis !== 'undefined';
 /**
  * Safely removes legacy credentials from localStorage if available.
  */
-export function clearLegacyCredentials(): void {
+export function clearLegacyCredentials() {
   try {
     if (isBrowser && typeof globalThis.localStorage !== 'undefined') {
       globalThis.localStorage.removeItem('tradewithme_user');
@@ -20,7 +20,7 @@ export function clearLegacyCredentials(): void {
  * Redirects the current window location to the login page.
  * @param path Optional custom login path (defaults to '/login').
  */
-export function redirectToLogin(path: string = '/login'): void {
+export function redirectToLogin(path = '/login') {
   if (isBrowser && typeof globalThis.location !== 'undefined') {
     globalThis.location.replace(path);
   }
@@ -29,7 +29,7 @@ export function redirectToLogin(path: string = '/login'): void {
 /**
  * Initializes authentication state by clearing legacy items and redirecting to login.
  */
-export function initAuth(): void {
+export function initAuth() {
   clearLegacyCredentials();
   redirectToLogin();
 }
@@ -38,7 +38,7 @@ export function initAuth(): void {
  * Enforces login by redirecting immediately.
  * Returns null to satisfy conditional rendering or guard returns.
  */
-export function requireLogin(): null {
+export function requireLogin() {
   redirectToLogin();
   return null;
 }
@@ -47,7 +47,7 @@ export function requireLogin(): null {
  * Performs a secure logout by calling the backend API and redirecting.
  * Ensures local redirection happens even if the network request fails.
  */
-export async function logout(): Promise<void> {
+export async function logout() {
   if (!isBrowser || typeof globalThis.location === 'undefined') {
     return;
   }
