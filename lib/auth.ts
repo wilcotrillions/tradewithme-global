@@ -39,8 +39,8 @@ export function getDatabase(): D1Database {
 function toBase64(bytes: Uint8Array): string {
   let binary = '';
 
-  for (const byte of bytes) {
-    binary += String.fromCharCode(byte);
+  for (let index = 0; index < bytes.length; index += 1) {
+    binary += String.fromCharCode(bytes[index]);
   }
 
   return btoa(binary);
@@ -112,7 +112,8 @@ export async function verifyPassword(
       return false;
     }
 
-    const salt = fromBase64(saltText);
+    // Copy the decoded bytes into an ArrayBuffer-backed view accepted by Web Crypto.
+    const salt = new Uint8Array(fromBase64(saltText));
     const expectedHash = fromBase64(hashText);
 
     const key = await crypto.subtle.importKey(
