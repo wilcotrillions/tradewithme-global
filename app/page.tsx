@@ -1,6 +1,8 @@
-import Navbar from "../components/layout/Navbar";
-import Footer from "../components/layout/Footer";
-import { getCurrentUser } from "../lib/auth";
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import Navbar from '../components/layout/Navbar';
+import Footer from '../components/layout/Footer';
+import { getCurrentUser } from '../lib/auth';
 
 export const dynamic = 'force-dynamic';
 
