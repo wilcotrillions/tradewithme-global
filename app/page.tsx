@@ -1,119 +1,93 @@
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { ArrowRight, BarChart3, BookOpen, CandlestickChart, CheckCircle2, ChevronRight, Clock3, Globe2, GraduationCap, LineChart, ShieldCheck, Smartphone, Wallet, Zap } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
-import { getCurrentUser } from '../lib/auth';
-
-export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Dashboard | TradeWithMe Global',
-  description: 'Your secure TradeWithMe Global member dashboard.',
+  title: 'TradeWithMe Global | Explore Global Markets With Confidence',
+  description: 'Explore Forex, cryptocurrency, shares, indices and commodities with market education, analysis and practical trading tools.',
 };
 
-const dashboardCards = [
-  {
-    title: 'Trading Hub',
-    description: 'Explore financial market education and trading resources.',
-    href: '/trading',
-  },
-  {
-    title: 'Investment Education',
-    description: 'Learn about investment planning and risk management.',
-    href: '/investments',
-  },
-  {
-    title: 'Trading Academy',
-    description: 'Continue learning about financial markets and trading.',
-    href: '/academy',
-  },
-  {
-    title: 'Account',
-    description: 'Manage your member account and personal information.',
-    href: '/account',
-  },
+const benefits = [
+  { icon: CandlestickChart, title: 'Trading Tools', text: 'Plan and review trades with practical charting, market research and risk-management resources.' },
+  { icon: Globe2, title: 'Trading Products', text: 'Explore opportunities and learn about markets across multiple global asset classes.' },
+  { icon: Smartphone, title: 'Learning Platforms', text: 'Access educational resources on desktop, tablet and mobile devices.' },
+  { icon: Wallet, title: 'Funding Methods', text: 'Understand common funding, fees and withdrawal considerations before using a third-party provider.' },
+];
+const products = [
+  { icon: Globe2, title: 'Forex', text: 'Learn about major, minor and exotic currency pairs, market sessions, spreads and exchange-rate movements.' },
+  { icon: BarChart3, title: 'Shares', text: 'Discover how public companies are valued and what can move share prices across international markets.' },
+  { icon: Zap, title: 'Energies', text: 'Understand crude oil and natural gas markets, including supply, demand and key market drivers.' },
+  { icon: LineChart, title: 'Indices', text: 'Explore major global indices and learn how baskets of shares reflect broader market performance.' },
+];
+const coins = [
+  ['BTC', 'Bitcoin', 'BTC/USD', 'A decentralised digital currency that enables peer-to-peer transactions recorded on a blockchain.'],
+  ['ETH', 'Ethereum', 'ETH/USD', 'An open-source blockchain network supporting smart contracts and decentralised applications.'],
+  ['XRP', 'XRP', 'XRP/USD', 'A digital asset designed for use within a payment and settlement network.'],
+  ['ADA', 'Cardano', 'ADA/USD', 'A proof-of-stake blockchain platform designed to support smart contracts and decentralised applications.'],
+];
+const features = [
+  ['Market Analysis', 'Review market structure, technical indicators and fundamental developments.'],
+  ['Research & Insights', 'Build a repeatable process for evaluating market information and trading ideas.'],
+  ['Risk Awareness', 'Understand leverage, volatility, position sizing and the possibility of loss.'],
+  ['Market Updates', 'Follow important economic releases, market sessions and scheduled events.'],
+];
+const plans = [
+  { name: 'Beginner Plan', label: 'Foundations', text: 'For people who are new to financial markets and want to understand the essentials.', items: ['Market fundamentals', 'Introduction to chart reading', 'Risk-management basics', 'Learning resource library'] },
+  { name: 'Advanced Plan', label: 'Develop your process', text: 'For learners who want to deepen their market knowledge and build a structured approach.', items: ['Technical and fundamental analysis', 'Trading plan development', 'Trade review and journaling', 'Strategy research resources'], featured: true },
+  { name: 'Professional Plan', label: 'Advanced study', text: 'For experienced learners seeking detailed market research and educational support.', items: ['Advanced market concepts', 'Multi-asset market analysis', 'Performance review framework', 'Priority educational support'] },
+];
+const faqs = [
+  ['Do I need previous trading experience?', 'No. Educational topics can be approached from the beginning, with more advanced material available as your knowledge develops.'],
+  ['Which markets are covered?', 'Learning resources cover Forex, shares, indices, commodities, futures concepts and cryptocurrencies.'],
+  ['Are trading profits guaranteed?', 'No. Trading involves risk and losses are possible. No strategy, signal, educator or platform can guarantee trading profits.'],
+  ['Is this website personal financial advice?', 'No. Website content is general educational information. Consider obtaining independent advice before making financial decisions.'],
 ];
 
-export default async function DashboardPage() {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    redirect('/login');
-  }
-
-  const fullName = [user.first_name, user.last_name]
-    .filter(Boolean)
-    .join(' ');
-
-  return (
-    <>
-      <Navbar />
-
-      <main className="min-h-screen bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
-            <div>
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
-                Member Dashboard
-              </p>
-
-              <h1 className="text-3xl font-bold sm:text-4xl">
-                Welcome back{fullName ? `, ${fullName}` : ''}
-              </h1>
-
-              <p className="mt-3 text-sm text-muted">
-                You are signed in as {user.email}
-              </p>
+export default function HomePage() {
+  return <>
+    <Navbar />
+    <main className="overflow-hidden bg-background text-foreground">
+      <section className="relative isolate">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_75%_20%,rgba(20,184,166,0.17),transparent_42%),radial-gradient(ellipse_at_15%_80%,rgba(212,175,55,0.10),transparent_38%)]" />
+        <div className="mx-auto grid max-w-7xl gap-14 px-4 pb-20 pt-20 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-8 lg:pb-28 lg:pt-28">
+          <div>
+            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary"><span className="h-2 w-2 rounded-full bg-primary" /> Global markets. Practical education.</div>
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-primary">TradeWithMe Global</p>
+            <h1 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">Explore Global Markets <span className="text-primary">With Confidence</span></h1>
+            <p className="mt-7 max-w-2xl text-base leading-8 text-muted sm:text-lg">Discover financial markets through practical education, market insights and tools designed to help you make more informed trading decisions.</p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <Link href="/register" className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3.5 font-semibold text-background transition hover:brightness-110">Create Account <ArrowRight size={18} /></Link>
+              <Link href="/login" className="inline-flex items-center justify-center rounded-lg border border-border bg-panel/70 px-6 py-3.5 font-semibold transition hover:border-primary hover:text-primary">Login</Link>
             </div>
-
-            <form action="/api/auth/logout" method="POST">
-              <button
-                type="submit"
-                className="rounded-lg border border-border px-5 py-3 text-sm font-semibold transition hover:border-primary hover:text-primary"
-              >
-                Sign Out
-              </button>
-            </form>
+            <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted"><span className="inline-flex items-center gap-2"><CheckCircle2 size={16} className="text-primary" /> Multi-market education</span><span className="inline-flex items-center gap-2"><CheckCircle2 size={16} className="text-primary" /> Risk-aware learning</span><span className="inline-flex items-center gap-2"><CheckCircle2 size={16} className="text-primary" /> Learn at your pace</span></div>
           </div>
-
-          <div className="mb-8 rounded-xl border border-border bg-panel p-6">
-            <h2 className="text-xl font-bold">Your account is active</h2>
-
-            <p className="mt-2 text-sm leading-7 text-muted">
-              Welcome to TradeWithMe Global. Explore the learning resources
-              and financial market education available on the platform.
-            </p>
+          <div className="relative rounded-2xl border border-border bg-[#0a1222]/95 p-5 shadow-2xl sm:p-7">
+            <div className="flex items-center justify-between border-b border-white/10 pb-5"><div><p className="text-sm font-semibold text-white">Live Market Overview</p><p className="mt-1 text-xs text-slate-400">Illustrative market watchlist</p></div><span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary">Demo view</span></div>
+            {['EUR/USD|Euro / US Dollar|Forex','BTC/USD|Bitcoin / US Dollar|Digital assets','XAU/USD|Gold / US Dollar|Commodities','US 500|US 500 Index|Indices'].map((item) => { const [symbol, name, category] = item.split('|'); return <div key={symbol} className="mt-3 flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.035] p-4"><div><p className="font-semibold text-white">{symbol}</p><p className="mt-1 text-xs text-slate-400">{name}</p></div><div className="text-right"><p className="text-sm font-semibold text-slate-200">—</p><p className="mt-1 text-xs text-slate-500">{category}</p></div></div>; })}
+            <div className="mt-5 rounded-xl border border-primary/20 bg-primary/[0.07] p-4"><div className="flex items-center gap-2 text-sm font-semibold text-primary"><CandlestickChart size={17} /> Market data connection</div><p className="mt-2 text-xs leading-6 text-slate-400">Live prices will appear when a verified market-data provider is connected. No live quote is represented in this preview.</p></div>
           </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-            {dashboardCards.map((card) => (
-              <Link
-                key={card.title}
-                href={card.href}
-                className="rounded-xl border border-border bg-panel p-6 transition hover:-translate-y-1 hover:border-primary/50"
-              >
-                <h2 className="text-lg font-bold">{card.title}</h2>
-
-                <p className="mt-3 text-sm leading-7 text-muted">
-                  {card.description}
-                </p>
-
-                <span className="mt-5 inline-block text-sm font-semibold text-primary">
-                  Explore →
-                </span>
-              </Link>
-            ))}
-          </div>
-
-          <p className="mt-10 text-xs leading-6 text-muted">
-            Trading forex, cryptocurrencies, and other financial instruments
-            involves risk. Educational content on this platform is not
-            personalized financial advice.
-          </p>
         </div>
-      </main>
+      </section>
 
-      <Footer />
-    </>
-  );
+      <section className="border-y border-border bg-panel/50"><div className="mx-auto grid max-w-7xl gap-7 px-4 py-8 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">{benefits.map(({icon: Icon,title,text}) => <div key={title} className="flex gap-4"><div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary"><Icon size={21}/></div><div><h2 className="font-semibold">{title}</h2><p className="mt-2 text-sm leading-6 text-muted">{text}</p></div></div>)}</div></section>
+
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"><div className="mx-auto max-w-2xl text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Real-time intelligence</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Market Analysis & Insights</h2><p className="mt-4 leading-7 text-muted">Build a clearer view of the markets with research topics, analysis frameworks and educational updates.</p></div><div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">{features.map(([title,text]) => <article key={title} className="rounded-2xl border border-border bg-panel p-6 transition hover:-translate-y-1 hover:border-primary/40"><BarChart3 size={25} className="text-primary"/><h3 className="mt-5 text-lg font-semibold">{title}</h3><p className="mt-3 text-sm leading-7 text-muted">{text}</p></article>)}</div></section>
+
+      <section id="markets" className="bg-panelAlt py-20"><div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"><div><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Diverse trading products</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Explore Global Markets</h2><p className="mt-4 max-w-2xl leading-7 text-muted">Learn about the instruments, market structure and risks across a range of asset classes.</p></div><div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{products.map(({icon: Icon,title,text}) => <article key={title} className="rounded-2xl border border-border bg-background p-6"><div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon size={23}/></div><h3 className="mt-6 text-xl font-semibold">{title}</h3><p className="mt-3 min-h-28 text-sm leading-7 text-muted">{text}</p><Link href="/trading" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">Explore {title} <ChevronRight size={16}/></Link></article>)}</div></div></section>
+
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"><div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center"><div><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Popular asset class</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Cryptocurrency Trading</h2><p className="mt-5 leading-8 text-muted">Explore the fundamentals of digital assets, blockchain networks and cryptocurrency markets. Prices can be highly volatile and losses are possible.</p><Link href="/trading" className="mt-7 inline-flex items-center gap-2 rounded-lg border border-border px-5 py-3 text-sm font-semibold hover:border-primary hover:text-primary">View all cryptocurrencies <ArrowRight size={17}/></Link></div><div className="grid gap-4 sm:grid-cols-2">{coins.map(([ticker,name,pair,description]) => <article key={ticker} className="rounded-2xl border border-border bg-panel p-5"><div className="flex items-center justify-between"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">{ticker}</span><span className="text-xs text-muted">{pair}</span></div><h3 className="mt-4 font-semibold">{name}</h3><p className="mt-2 text-sm leading-6 text-muted">{description}</p></article>)}</div></div></section>
+
+      <section className="border-y border-border bg-panel/50 py-20"><div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8"><div><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Education center</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Learn From Market Educators</h2><p className="mt-5 leading-8 text-muted">Discover the foundations of financial markets and develop your understanding through structured learning, market examples and practical exercises.</p><div className="mt-8 space-y-5">{[['01','Understand the markets','Start with the foundations of Forex, shares, commodities, indices and digital assets.'],['02','Build a trading process','Study chart analysis, trading plans, journaling and disciplined decision-making.'],['03','Manage risk','Learn how position sizing, stop-loss planning and leverage affect potential outcomes.']].map(([n,title,text]) => <div key={n} className="flex gap-4"><span className="text-sm font-bold text-primary">{n}</span><div><h3 className="font-semibold">{title}</h3><p className="mt-1 text-sm leading-6 text-muted">{text}</p></div></div>)}</div><Link href="/academy" className="mt-8 inline-flex items-center gap-2 font-semibold text-primary">Explore learning resources <ArrowRight size={17}/></Link></div><div className="rounded-2xl border border-border bg-background p-7 sm:p-9"><div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary"><GraduationCap size={28}/></div><h3 className="mt-6 text-2xl font-semibold">Build knowledge before taking risk</h3><p className="mt-4 text-sm leading-7 text-muted">Learn the language of the markets, practise evaluating trade ideas and understand the risks of leveraged products before considering whether trading is appropriate for you.</p><div className="mt-7 grid grid-cols-2 gap-3"><div className="rounded-xl border border-border bg-panel p-4"><BookOpen className="text-primary" size={21}/><p className="mt-3 text-sm font-semibold">Structured lessons</p></div><div className="rounded-xl border border-border bg-panel p-4"><ShieldCheck className="text-primary" size={21}/><p className="mt-3 text-sm font-semibold">Risk awareness</p></div></div></div></div></section>
+
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"><div className="mx-auto max-w-2xl text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Learning memberships</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Choose Your Learning Path</h2><p className="mt-4 leading-7 text-muted">Explore educational options designed for different levels of market knowledge. Membership details and pricing should be confirmed before enrolment.</p></div><div className="mt-12 grid gap-5 lg:grid-cols-3">{plans.map((plan) => <article key={plan.name} className={`relative rounded-2xl border p-7 ${plan.featured ? 'border-primary bg-primary/[0.07] shadow-xl shadow-primary/5' : 'border-border bg-panel'}`}>{plan.featured && <span className="absolute -top-3 right-6 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-background">Popular path</span>}<p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">{plan.label}</p><h3 className="mt-4 text-2xl font-semibold">{plan.name}</h3><p className="mt-3 min-h-20 text-sm leading-7 text-muted">{plan.text}</p><div className="my-6 border-t border-border"/><ul className="space-y-4">{plan.items.map((item) => <li key={item} className="flex gap-3 text-sm"><CheckCircle2 size={17} className="mt-0.5 shrink-0 text-primary"/>{item}</li>)}</ul><Link href="/contact" className="mt-8 flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-3 text-sm font-semibold transition hover:border-primary hover:text-primary">Contact our team <ArrowRight size={16}/></Link></article>)}</div><p className="mt-6 text-center text-xs leading-6 text-muted">Educational memberships are not investment products. No returns, trading profits or recovery of trading losses are promised.</p></section>
+
+      <section className="bg-panelAlt py-20"><div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"><div className="mx-auto max-w-2xl text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">A clear learning process</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">How It Works</h2><p className="mt-4 leading-7 text-muted">Get started with three straightforward steps.</p></div><div className="mt-12 grid gap-6 md:grid-cols-3">{[['01','Create an account','Register to access member features and educational resources.'],['02','Learn and practise','Explore market topics, review examples and develop your own learning plan.'],['03','Make informed decisions','Use your knowledge to assess risk carefully. Any live trading is your own decision and may result in losses.']].map(([n,title,text]) => <article key={n} className="rounded-2xl border border-border bg-background p-7"><p className="text-sm font-bold tracking-[0.2em] text-primary">{n}</p><h3 className="mt-5 text-xl font-semibold">{title}</h3><p className="mt-3 text-sm leading-7 text-muted">{text}</p></article>)}</div></div></section>
+
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"><div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]"><div><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Frequently asked questions</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Questions, Answered</h2><p className="mt-5 leading-7 text-muted">Understand what the platform offers and the risks involved in trading financial markets.</p><Link href="/contact" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-primary">Contact our team <ArrowRight size={17}/></Link></div><div className="space-y-3">{faqs.map(([q,a]) => <details key={q} className="group rounded-xl border border-border bg-panel p-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold">{q}<ChevronRight size={18} className="shrink-0 text-primary transition group-open:rotate-90"/></summary><p className="mt-4 text-sm leading-7 text-muted">{a}</p></details>)}</div></div></section>
+
+      <section className="px-4 pb-20 sm:px-6 lg:px-8"><div className="mx-auto max-w-7xl rounded-3xl border border-primary/20 bg-[radial-gradient(ellipse_at_80%_20%,rgba(20,184,166,0.18),transparent_45%),#0b1424] px-7 py-12 text-center sm:px-12 sm:py-16"><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary"><Clock3 size={28}/></div><h2 className="mx-auto mt-6 max-w-2xl text-3xl font-semibold text-white sm:text-4xl">Explore Financial Markets With a Clearer Perspective</h2><p className="mx-auto mt-5 max-w-2xl leading-7 text-slate-300">Start with education, build your understanding and approach every financial decision with care.</p><div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row"><Link href="/register" className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3.5 font-semibold text-background">Create Account <ArrowRight size={17}/></Link><Link href="/contact" className="inline-flex items-center justify-center rounded-lg border border-white/20 px-6 py-3.5 font-semibold text-white hover:bg-white/5">Contact Our Team</Link></div></div></section>
+    </main>
+    <Footer />
+  </>;
 }
