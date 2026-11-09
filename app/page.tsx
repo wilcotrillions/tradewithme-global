@@ -1,118 +1,124 @@
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { ArrowRight, BarChart3, BookOpen, CandlestickChart, CheckCircle2, ChevronRight, Clock3, Globe2, GraduationCap, LineChart, ShieldCheck, Smartphone, Wallet, Zap, Copy, TrendingUp, Users, LockKeyhole } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
-import { getCurrentUser } from '../lib/auth';
-
-export const dynamic = 'force-dynamic';
 
 export const metadata = {
-  title: 'Dashboard | TradeWithMe Global',
-  description: 'Your secure TradeWithMe Global member dashboard.',
+  title: 'TradeWithMe Global | Trade Global Markets With Confidence',
+  description: 'Explore Forex, cryptocurrencies, shares, indices and commodities with TradeWithMe Global. Access market education, analysis and trading resources.',
 };
 
-const dashboardCards = [
-  {
-    title: 'Trading Hub',
-    description: 'Explore financial market education and trading resources.',
-    href: '/trading',
-  },
-  {
-    title: 'Investment Education',
-    description: 'Learn about investment planning and risk management.',
-    href: '/investments',
-  },
-  {
-    title: 'Trading Academy',
-    description: 'Continue learning about financial markets and trading.',
-    href: '/academy',
-  },
-  {
-    title: 'Account',
-    description: 'Manage your member account and personal information.',
-    href: '/account',
-  },
+const benefits = [
+  { icon: CandlestickChart, title: 'Trading Tools', text: 'Plan and review your trading ideas with charting resources, market research and practical educational tools.' },
+  { icon: Globe2, title: 'Trading Products', text: 'Explore global financial markets and learn how different asset classes work.' },
+  { icon: Smartphone, title: 'Trading Platforms', text: 'Access your learning resources and market information across desktop, tablet and mobile devices.' },
+  { icon: Wallet, title: 'Funding Information', text: 'Understand deposits, withdrawals, payment providers, fees and account-security considerations.' },
 ];
 
-export default async function DashboardPage() {
-  const user = await getCurrentUser();
+const products = [
+  { icon: Globe2, title: 'Forex', text: 'Explore major, minor and exotic currency pairs. Learn about spreads, liquidity, market sessions and exchange-rate movements.' },
+  { icon: BarChart3, title: 'Shares', text: 'Discover public companies and learn how earnings, valuations and global events can influence share prices.' },
+  { icon: Zap, title: 'Energies', text: 'Study UK and US crude oil, natural gas and the supply-and-demand factors that influence energy markets.' },
+  { icon: LineChart, title: 'Indices', text: 'Learn how major and minor global stock indices track groups of companies and respond to economic news.' },
+];
 
-  if (!user) {
-    redirect('/login');
-  }
+const coins = [
+  { ticker: 'BTC', name: 'Bitcoin', pair: 'BTC/USD', text: 'A decentralised digital currency that enables peer-to-peer transactions recorded on a public blockchain.' },
+  { ticker: 'ETH', name: 'Ethereum', pair: 'ETH/USD', text: 'An open-source blockchain network supporting smart contracts and decentralised applications.' },
+  { ticker: 'XRP', name: 'XRP', pair: 'XRP/USD', text: 'A digital asset associated with a payment and settlement network designed for fast transfers.' },
+  { ticker: 'ADA', name: 'Cardano', pair: 'ADA/USD', text: 'A proof-of-stake blockchain platform designed to support smart contracts and decentralised applications.' },
+];
 
-  const fullName = [user.first_name, user.last_name]
-    .filter(Boolean)
-    .join(' ');
+const research = [
+  { title: 'Live Market Overview', text: 'Follow market instruments and understand how prices, spreads and volatility are presented.' },
+  { title: 'Expert Market Analysis', text: 'Explore technical and fundamental analysis concepts across major financial markets.' },
+  { title: 'Daily Market Updates', text: 'Review important economic releases, market developments and scheduled events.' },
+  { title: 'Premium Trading Tools', text: 'Learn to use charts, indicators, watchlists, trade journals and risk-management tools.' },
+];
 
+const plans = [
+  { name: 'Beginner Plan', label: 'Foundations', price: 'Contact us', range: 'For new learners', description: 'Build a sound understanding of financial markets before making trading decisions.', items: ['Market fundamentals', 'Introduction to chart reading', 'Trading terminology', 'Risk-management essentials'] },
+  { name: 'Advanced Plan', label: 'Popular learning path', price: 'Contact us', range: 'For developing traders', description: 'Develop a structured approach to market research, trade planning and review.', items: ['Technical and fundamental analysis', 'Trading plan development', 'Position sizing and risk controls', 'Trade review and journaling'], featured: true },
+  { name: 'Professional Plan', label: 'Advanced study', price: 'Contact us', range: 'For experienced learners', description: 'Explore more advanced market concepts and multi-asset research methods.', items: ['Advanced market concepts', 'Multi-asset market analysis', 'Strategy research framework', 'Performance review resources'] },
+  { name: 'Market Research Plan', label: 'Research resources', price: 'Contact us', range: 'Educational access', description: 'Build confidence reading market information and evaluating trading ideas.', items: ['Market research resources', 'Economic calendar guidance', 'Market commentary education', 'Risk-awareness materials'] },
+];
+
+const platformFeatures = [
+  { icon: Zap, title: 'Execution Awareness', text: 'Understand order types, liquidity, spreads, slippage and the factors that can affect trade execution.' },
+  { icon: TrendingUp, title: 'Intelligent Analysis', text: 'Study technical indicators, market sentiment, economic data and research tools.' },
+  { icon: BarChart3, title: 'Transparent Reporting', text: 'Learn to read account statements, transaction history, equity movements and trading costs.' },
+  { icon: Smartphone, title: 'Intuitive Experience', text: 'Explore a clear, accessible experience for learning about markets across your devices.' },
+];
+
+const steps = [
+  { number: '01', title: 'Create an Account', text: 'Register to access the TradeWithMe Global website and available educational resources.' },
+  { number: '02', title: 'Learn and Explore', text: 'Study market information, practise evaluating ideas and understand the risks before trading.' },
+  { number: '03', title: 'Make Informed Decisions', text: 'Decide independently whether trading is suitable for you. Financial markets can result in losses.' },
+];
+
+const faqs = [
+  ['Do I need previous trading experience?', 'No. You can begin with the fundamentals and progress to more advanced market topics at your own pace.'],
+  ['Which markets can I learn about?', 'Our educational content covers Forex, cryptocurrencies, shares, indices, commodities and futures concepts.'],
+  ['Are trading profits guaranteed?', 'No. Trading involves risk and losses are possible. No person, strategy or platform can guarantee trading profits.'],
+  ['Does TradeWithMe Global provide personal financial advice?', 'Website content is general educational information, not a personal recommendation to buy or sell a financial instrument.'],
+  ['How can I contact the team?', 'Use the Contact page to send an enquiry about educational resources, membership information or the platform.'],
+];
+
+export default function HomePage() {
   return (
     <>
       <Navbar />
-
-      <main className="min-h-screen bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
+      <main className="overflow-hidden bg-background text-foreground">
+        <section className="relative isolate">
+          <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_75%_20%,rgba(20,184,166,0.17),transparent_42%),radial-gradient(ellipse_at_15%_80%,rgba(212,175,55,0.10),transparent_38%)]" />
+          <div className="mx-auto grid max-w-7xl gap-14 px-4 pb-20 pt-20 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:px-8 lg:pb-28 lg:pt-28">
             <div>
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
-                Member Dashboard
-              </p>
-
-              <h1 className="text-3xl font-bold sm:text-4xl">
-                Welcome back{fullName ? `, ${fullName}` : ''}
-              </h1>
-
-              <p className="mt-3 text-sm text-muted">
-                You are signed in as {user.email}
-              </p>
+              <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.16em] text-primary"><span className="h-2 w-2 rounded-full bg-primary" /> Global markets. Practical education.</div>
+              <p className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-primary">TradeWithMe Global</p>
+              <h1 className="max-w-3xl text-4xl font-semibold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">Trade Global Markets <span className="text-primary">With Confidence</span></h1>
+              <p className="mt-7 max-w-2xl text-base leading-8 text-muted sm:text-lg">Access market education, research and trading resources covering Forex, cryptocurrencies, commodities, indices and more. Build your understanding and make informed decisions.</p>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <Link href="/register" className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3.5 font-semibold text-background transition hover:brightness-110">Create Account <ArrowRight size={18} /></Link>
+                <Link href="/login" className="inline-flex items-center justify-center rounded-lg border border-border bg-panel/70 px-6 py-3.5 font-semibold transition hover:border-primary hover:text-primary">Login</Link>
+              </div>
+              <div className="mt-9 flex flex-wrap gap-x-6 gap-y-3 text-sm text-muted"><span className="inline-flex items-center gap-2"><CheckCircle2 size={16} className="text-primary" /> Multi-market education</span><span className="inline-flex items-center gap-2"><CheckCircle2 size={16} className="text-primary" /> Risk-aware learning</span><span className="inline-flex items-center gap-2"><CheckCircle2 size={16} className="text-primary" /> Global market insights</span></div>
             </div>
-
-            <form action="/api/auth/logout" method="POST">
-              <button
-                type="submit"
-                className="rounded-lg border border-border px-5 py-3 text-sm font-semibold transition hover:border-primary hover:text-primary"
-              >
-                Sign Out
-              </button>
-            </form>
+            <div className="relative rounded-2xl border border-border bg-[#0a1222]/95 p-5 shadow-2xl sm:p-7">
+              <div className="flex items-center justify-between border-b border-white/10 pb-5"><div><p className="text-sm font-semibold text-white">Live Market Overview</p><p className="mt-1 text-xs text-slate-400">Market watchlist preview</p></div><span className="rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary">Demo view</span></div>
+              {['BTC/USD|Bitcoin / US Dollar|Digital assets','EUR/USD|Euro / US Dollar|Forex','ETH/USD|Ethereum / US Dollar|Digital assets','XAU/USD|Gold / US Dollar|Commodities','US 500|US 500 Index|Indices'].map((item) => { const [symbol, name, category] = item.split('|'); return <div key={symbol} className="mt-3 flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.035] p-4"><div><p className="font-semibold text-white">{symbol}</p><p className="mt-1 text-xs text-slate-400">{name}</p></div><div className="text-right"><p className="text-sm font-semibold text-slate-200">—</p><p className="mt-1 text-xs text-slate-500">{category}</p></div></div>; })}
+              <div className="mt-5 rounded-xl border border-primary/20 bg-primary/[0.07] p-4"><div className="flex items-center gap-2 text-sm font-semibold text-primary"><CandlestickChart size={17} /> Real-time market information</div><p className="mt-2 text-xs leading-6 text-slate-400">Market prices will display when a verified data provider is connected. This preview does not represent live quotes.</p></div>
+            </div>
           </div>
+        </section>
 
-          <div className="mb-8 rounded-xl border border-border bg-panel p-6">
-            <h2 className="text-xl font-bold">Your account is active</h2>
+        <section className="border-y border-border bg-panel/50"><div className="mx-auto grid max-w-7xl gap-7 px-4 py-8 sm:grid-cols-2 sm:px-6 lg:grid-cols-4 lg:px-8">{benefits.map(({ icon: Icon, title, text }) => <div key={title} className="flex gap-4"><div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary"><Icon size={21} /></div><div><h2 className="font-semibold">{title}</h2><p className="mt-2 text-sm leading-6 text-muted">{text}</p></div></div>)}</div></section>
 
-            <p className="mt-2 text-sm leading-7 text-muted">
-              Welcome to TradeWithMe Global. Explore the learning resources
-              and financial market education available on the platform.
-            </p>
-          </div>
+        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"><div className="mx-auto max-w-2xl text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Real-time intelligence</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Market Analysis &amp; Insights</h2><p className="mt-4 leading-7 text-muted">Stay informed with market research topics, educational analysis and insights into price movements across major asset classes.</p></div><div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{research.map(({ title, text }) => <article key={title} className="rounded-2xl border border-border bg-panel p-6 transition hover:-translate-y-1 hover:border-primary/40"><BarChart3 size={25} className="text-primary" /><h3 className="mt-5 text-lg font-semibold">{title}</h3><p className="mt-3 text-sm leading-7 text-muted">{text}</p><Link href="/trading" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">Learn more <ChevronRight size={16} /></Link></article>)}</div></section>
 
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-            {dashboardCards.map((card) => (
-              <Link
-                key={card.title}
-                href={card.href}
-                className="rounded-xl border border-border bg-panel p-6 transition hover:-translate-y-1 hover:border-primary/50"
-              >
-                <h2 className="text-lg font-bold">{card.title}</h2>
+        <section id="markets" className="bg-panelAlt py-20"><div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"><div><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Diverse trading products</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Explore Global Markets</h2><p className="mt-4 max-w-2xl leading-7 text-muted">Discover different asset classes and understand the opportunities and risks associated with each market.</p></div><div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{products.map(({ icon: Icon, title, text }) => <article key={title} className="rounded-2xl border border-border bg-background p-6"><div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary"><Icon size={23} /></div><h3 className="mt-6 text-xl font-semibold">{title}</h3><p className="mt-3 min-h-28 text-sm leading-7 text-muted">{text}</p><Link href="/trading" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">Explore {title} <ChevronRight size={16} /></Link></article>)}</div></div></section>
 
-                <p className="mt-3 text-sm leading-7 text-muted">
-                  {card.description}
-                </p>
+        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"><div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-center"><div><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Popular asset class</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Cryptocurrency Trading</h2><p className="mt-5 leading-8 text-muted">Explore some of the world's most widely known digital assets. Learn about blockchain technology, crypto markets and the factors that can influence prices. Cryptocurrency markets are volatile and you may lose money.</p><Link href="/trading" className="mt-7 inline-flex items-center gap-2 rounded-lg border border-border px-5 py-3 text-sm font-semibold hover:border-primary hover:text-primary">View all cryptocurrencies <ArrowRight size={17} /></Link></div><div className="grid gap-4 sm:grid-cols-2">{coins.map((coin) => <article key={coin.ticker} className="rounded-2xl border border-border bg-panel p-5"><div className="flex items-center justify-between"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">{coin.ticker}</span><span className="text-xs text-muted">{coin.pair}</span></div><h3 className="mt-4 font-semibold">{coin.name}</h3><p className="mt-2 text-sm leading-6 text-muted">{coin.text}</p><Link href="/trading" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">Explore asset <ArrowRight size={15} /></Link></article>)}</div></div></section>
 
-                <span className="mt-5 inline-block text-sm font-semibold text-primary">
-                  Explore →
-                </span>
-              </Link>
-            ))}
-          </div>
+        <section className="border-y border-border bg-panel/50 py-20"><div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8"><div><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Education center</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Learn From Market Educators</h2><p className="mt-5 leading-8 text-muted">Discover what you need to know about financial markets, from the basics to more advanced concepts. Build knowledge through structured learning and practical examples.</p><div className="mt-8 space-y-5">{[['01', 'Understand the markets', 'Learn the foundations of Forex, shares, commodities, indices and digital assets.'], ['02', 'Build a trading process', 'Study chart analysis, trading plans, journaling and disciplined decision-making.'], ['03', 'Understand risk', 'Learn how leverage, volatility, position sizing and stop-loss planning affect potential outcomes.']].map(([n, title, text]) => <div key={n} className="flex gap-4"><span className="text-sm font-bold text-primary">{n}</span><div><h3 className="font-semibold">{title}</h3><p className="mt-1 text-sm leading-6 text-muted">{text}</p></div></div>)}</div><Link href="/academy" className="mt-8 inline-flex items-center gap-2 font-semibold text-primary">Explore learning resources <ArrowRight size={17} /></Link></div><div className="rounded-2xl border border-border bg-background p-7 sm:p-9"><div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary"><GraduationCap size={28} /></div><h3 className="mt-6 text-2xl font-semibold">Learn before you trade</h3><p className="mt-4 text-sm leading-7 text-muted">Understand the markets, practise evaluating trade ideas and learn how risk works before considering whether trading is appropriate for your circumstances.</p><div className="mt-7 grid grid-cols-2 gap-3"><div className="rounded-xl border border-border bg-panel p-4"><BookOpen className="text-primary" size={21} /><p className="mt-3 text-sm font-semibold">Structured lessons</p></div><div className="rounded-xl border border-border bg-panel p-4"><ShieldCheck className="text-primary" size={21} /><p className="mt-3 text-sm font-semibold">Risk awareness</p></div></div><div className="mt-5 rounded-xl border border-border bg-panel p-4"><p className="text-sm leading-6 text-muted">Educational content is general information and does not guarantee trading outcomes.</p></div></div></div></section>
 
-          <p className="mt-10 text-xs leading-6 text-muted">
-            Trading forex, cryptocurrencies, and other financial instruments
-            involves risk. Educational content on this platform is not
-            personalized financial advice.
-          </p>
-        </div>
+        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"><div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-center"><div><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Superior trading experience</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Tools for a More Informed Approach</h2><p className="mt-5 leading-8 text-muted">Learn about the tools and market conditions that professional traders consider when evaluating financial instruments.</p><Link href="/trading" className="mt-7 inline-flex items-center gap-2 font-semibold text-primary">View trading resources <ArrowRight size={17} /></Link></div><div className="grid gap-4 sm:grid-cols-2">{platformFeatures.map(({ icon: Icon, title, text }) => <article key={title} className="rounded-2xl border border-border bg-panel p-6"><Icon className="text-primary" size={24} /><h3 className="mt-4 font-semibold">{title}</h3><p className="mt-2 text-sm leading-7 text-muted">{text}</p></article>)}</div></div></section>
+
+        <section className="bg-panelAlt py-20"><div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"><div className="mx-auto max-w-2xl text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Social trading education</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Understand Copy Trading</h2><p className="mt-4 leading-7 text-muted">Learn how copy trading works, how to assess a strategy and why past performance does not predict future results.</p></div><div className="mt-12 grid gap-5 md:grid-cols-3">{[{ icon: Copy, title: 'Explore Strategies', text: 'Understand how strategy providers report their trading history, drawdowns and risk.' }, { icon: Users, title: 'Evaluate Traders', text: 'Learn to review a provider’s approach, trading frequency, leverage and consistency.' }, { icon: LockKeyhole, title: 'Stay Risk Aware', text: 'Copy trading can magnify losses as well as gains. Review settings and exposure carefully.' }].map(({ icon: Icon, title, text }) => <article key={title} className="rounded-2xl border border-border bg-background p-7"><Icon size={25} className="text-primary" /><h3 className="mt-5 text-xl font-semibold">{title}</h3><p className="mt-3 text-sm leading-7 text-muted">{text}</p></article>)}</div></div></section>
+
+        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"><div className="grid gap-12 lg:grid-cols-2 lg:items-center"><div><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Our story</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">About TradeWithMe Global</h2><p className="mt-5 leading-8 text-muted">TradeWithMe Global is focused on making financial-market education and research resources easier to explore. Our content introduces different asset classes, market concepts and tools to support more informed learning.</p><p className="mt-4 leading-8 text-muted">Whether you are learning about Forex, digital assets, shares or commodities, take time to understand the products, costs and risks before making financial decisions.</p><Link href="/contact" className="mt-7 inline-flex items-center gap-2 font-semibold text-primary">Learn more about us <ArrowRight size={17} /></Link></div><div className="grid gap-4 sm:grid-cols-2"><div className="rounded-2xl border border-border bg-panel p-6"><ShieldCheck className="text-primary" size={25} /><h3 className="mt-4 font-semibold">Transparency</h3><p className="mt-2 text-sm leading-7 text-muted">Clear information about services, costs, risks and the limits of educational content.</p></div><div className="rounded-2xl border border-border bg-panel p-6"><Globe2 className="text-primary" size={25} /><h3 className="mt-4 font-semibold">Global Markets</h3><p className="mt-2 text-sm leading-7 text-muted">Educational coverage of financial instruments and markets around the world.</p></div><div className="rounded-2xl border border-border bg-panel p-6"><GraduationCap className="text-primary" size={25} /><h3 className="mt-4 font-semibold">Learning First</h3><p className="mt-2 text-sm leading-7 text-muted">Resources designed to support market knowledge and independent decision-making.</p></div><div className="rounded-2xl border border-border bg-panel p-6"><Users className="text-primary" size={25} /><h3 className="mt-4 font-semibold">Client Support</h3><p className="mt-2 text-sm leading-7 text-muted">A contact point for questions about the website and available educational resources.</p></div></div></div></section>
+
+        <section className="border-y border-border bg-panel/50 py-20"><div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"><div className="mx-auto max-w-2xl text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Learning programmes</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Explore Learning Plans</h2><p className="mt-4 leading-7 text-muted">Choose an educational pathway based on your experience and learning goals. Contact the team for current programme details and pricing.</p></div><div className="mt-12 grid gap-5 md:grid-cols-2 xl:grid-cols-4">{plans.map((plan) => <article key={plan.name} className={`relative rounded-2xl border p-6 ${plan.featured ? 'border-primary bg-primary/[0.07] shadow-xl shadow-primary/5' : 'border-border bg-panel'}`}>{plan.featured && <span className="absolute -top-3 right-5 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-background">Featured</span>}<p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">{plan.label}</p><h3 className="mt-4 text-xl font-semibold">{plan.name}</h3><p className="mt-3 min-h-20 text-sm leading-7 text-muted">{plan.description}</p><div className="my-5 border-t border-border" /><p className="text-2xl font-semibold">{plan.price}</p><p className="mt-1 text-xs text-muted">{plan.range}</p><ul className="mt-6 space-y-3">{plan.items.map((item) => <li key={item} className="flex gap-2 text-sm"><CheckCircle2 size={16} className="mt-0.5 shrink-0 text-primary" />{item}</li>)}</ul><Link href="/contact" className="mt-7 flex items-center justify-center gap-2 rounded-lg border border-border px-4 py-3 text-sm font-semibold transition hover:border-primary hover:text-primary">Enquire now <ArrowRight size={16} /></Link></article>)}</div><p className="mt-6 text-center text-xs leading-6 text-muted">These are educational programmes, not investment plans or deposit products. No trading returns, profits or recovery of capital are promised.</p></div></section>
+
+        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"><div className="grid gap-12 lg:grid-cols-2 lg:items-center"><div><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Global market information</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Stay Up to Date With Market Developments</h2><p className="mt-5 leading-8 text-muted">Explore market information and educational resources covering global financial instruments. Market availability, trading hours, pricing and fees vary by provider and instrument.</p><Link href="/academy" className="mt-7 inline-flex items-center gap-2 font-semibold text-primary">Explore the education centre <ArrowRight size={17} /></Link></div><div className="rounded-2xl border border-border bg-panel p-7"><h3 className="text-xl font-semibold">Experience More Than Market Headlines</h3><p className="mt-4 text-sm leading-7 text-muted">Build a repeatable learning process with market fundamentals, chart-reading skills, economic-calendar awareness and risk-management knowledge.</p><div className="mt-6 space-y-4">{['Daily market analysis topics', 'Educational webinars and learning sessions', 'Market concepts and trading strategy research', 'Risk awareness and trading discipline'].map((item) => <div key={item} className="flex items-center gap-3 text-sm"><CheckCircle2 size={17} className="text-primary" />{item}</div>)}</div></div></div></section>
+
+        <section className="bg-panelAlt py-20"><div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"><div className="mx-auto max-w-2xl text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Simple process</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">How It Works</h2><p className="mt-4 leading-7 text-muted">Get started with three straightforward steps.</p></div><div className="mt-12 grid gap-6 md:grid-cols-3">{steps.map((step) => <article key={step.number} className="rounded-2xl border border-border bg-background p-7"><p className="text-sm font-bold tracking-[0.2em] text-primary">{step.number}</p><h3 className="mt-5 text-xl font-semibold">{step.title}</h3><p className="mt-3 text-sm leading-7 text-muted">{step.text}</p></article>)}</div></div></section>
+
+        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8"><div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]"><div><p className="text-xs font-bold uppercase tracking-[0.22em] text-primary">Frequently asked questions</p><h2 className="mt-4 text-3xl font-semibold sm:text-4xl">Questions, Answered</h2><p className="mt-5 leading-7 text-muted">Find out more about the platform, available resources and the risks associated with financial markets.</p><Link href="/contact" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-primary">Contact our team <ArrowRight size={17} /></Link></div><div className="space-y-3">{faqs.map(([question, answer]) => <details key={question} className="group rounded-xl border border-border bg-panel p-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold">{question}<ChevronRight size={18} className="shrink-0 text-primary transition group-open:rotate-90" /></summary><p className="mt-4 text-sm leading-7 text-muted">{answer}</p></details>)}</div></div></section>
+
+        <section className="px-4 pb-20 sm:px-6 lg:px-8"><div className="mx-auto max-w-7xl rounded-3xl border border-primary/20 bg-[radial-gradient(ellipse_at_80%_20%,rgba(20,184,166,0.18),transparent_45%),#0b1424] px-7 py-12 text-center sm:px-12 sm:py-16"><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary"><Clock3 size={28} /></div><h2 className="mx-auto mt-6 max-w-2xl text-3xl font-semibold text-white sm:text-4xl">Start Exploring Global Financial Markets</h2><p className="mx-auto mt-5 max-w-2xl leading-7 text-slate-300">Build your knowledge, explore market information and approach every financial decision with care.</p><div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row"><Link href="/register" className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3.5 font-semibold text-background">Create Account <ArrowRight size={17} /></Link><Link href="/contact" className="inline-flex items-center justify-center rounded-lg border border-white/20 px-6 py-3.5 font-semibold text-white hover:bg-white/5">Contact Our Team</Link></div></div></section>
+
+        <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8"><div className="rounded-2xl border border-border bg-panel p-6"><p className="text-xs font-bold uppercase tracking-[0.18em] text-primary">Important risk warning</p><p className="mt-3 text-sm leading-7 text-muted">Trading foreign exchange, contracts for difference (CFDs), cryptocurrencies and other leveraged or complex financial products carries a high level of risk. Leverage can magnify both gains and losses, and you may lose some or all of your invested capital. These products may not be suitable for all investors. Never trade with money you cannot afford to lose. Understand the product, costs and risks and seek independent professional advice where appropriate. TradeWithMe Global website content is educational and does not constitute a guarantee of returns or a personal investment recommendation.</p></div></section>
       </main>
-
       <Footer />
     </>
   );
