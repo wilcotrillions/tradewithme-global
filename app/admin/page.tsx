@@ -1,10 +1,8 @@
-import AdminDashboard from './AdminDashboard';
+import { redirect } from 'next/navigation';
 
-export const metadata = {
-  title: 'Administrator dashboard | TradeWithMe Global',
-  description: 'Administrator workspace preview for customer and account operations.',
-};
-
-export default function AdminPage() {
-  return <AdminDashboard />;
+// There is no verified administrator role or authorization schema in this repository.
+// Deny access rather than exposing the illustrative admin console to customers.
+export const dynamic = 'force-dynamic';
+export default function AdminPage(): never {
+  redirect('/dashboard');
 }

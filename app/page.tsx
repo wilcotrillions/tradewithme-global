@@ -1,119 +1,13 @@
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
-import { getCurrentUser } from '../lib/auth';
 
-export const dynamic = 'force-dynamic';
-
-export const metadata = {
-  title: 'Dashboard | TradeWithMe Global',
-  description: 'Your secure TradeWithMe Global member dashboard.',
-};
-
-const dashboardCards = [
-  {
-    title: 'Trading Hub',
-    description: 'Explore financial market education and trading resources.',
-    href: '/trading',
-  },
-  {
-    title: 'Investment Education',
-    description: 'Learn about investment planning and risk management.',
-    href: '/investments',
-  },
-  {
-    title: 'Trading Academy',
-    description: 'Continue learning about financial markets and trading.',
-    href: '/academy',
-  },
-  {
-    title: 'Account',
-    description: 'Manage your member account and personal information.',
-    href: '/account',
-  },
+export const metadata = { title: 'TradeWithMe Global | Trading education', description: 'Build your understanding of financial markets with trading education, learning resources, and risk awareness.' };
+const cards = [
+  { title: 'Trading', description: 'Explore market fundamentals and trading concepts.', href: '/trading' },
+  { title: 'Investments', description: 'Learn about investment principles and risk.', href: '/investments' },
+  { title: 'Academy', description: 'Access educational resources for your learning journey.', href: '/academy' },
 ];
-
-export default async function DashboardPage() {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    redirect('/login');
-  }
-
-  const fullName = [user.first_name, user.last_name]
-    .filter(Boolean)
-    .join(' ');
-
-  return (
-    <>
-      <Navbar />
-
-      <main className="min-h-screen bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
-            <div>
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
-                Member Dashboard
-              </p>
-
-              <h1 className="text-3xl font-bold sm:text-4xl">
-                Welcome back{fullName ? `, ${fullName}` : ''}
-              </h1>
-
-              <p className="mt-3 text-sm text-muted">
-                You are signed in as {user.email}
-              </p>
-            </div>
-
-            <form action="/api/auth/logout" method="POST">
-              <button
-                type="submit"
-                className="rounded-lg border border-border px-5 py-3 text-sm font-semibold transition hover:border-primary hover:text-primary"
-              >
-                Sign Out
-              </button>
-            </form>
-          </div>
-
-          <div className="mb-8 rounded-xl border border-border bg-panel p-6">
-            <h2 className="text-xl font-bold">Your account is active</h2>
-
-            <p className="mt-2 text-sm leading-7 text-muted">
-              Welcome to TradeWithMe Global. Explore the learning resources
-              and financial market education available on the platform.
-            </p>
-          </div>
-
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-            {dashboardCards.map((card) => (
-              <Link
-                key={card.title}
-                href={card.href}
-                className="rounded-xl border border-border bg-panel p-6 transition hover:-translate-y-1 hover:border-primary/50"
-              >
-                <h2 className="text-lg font-bold">{card.title}</h2>
-
-                <p className="mt-3 text-sm leading-7 text-muted">
-                  {card.description}
-                </p>
-
-                <span className="mt-5 inline-block text-sm font-semibold text-primary">
-                  Explore →
-                </span>
-              </Link>
-            ))}
-          </div>
-
-          <p className="mt-10 text-xs leading-6 text-muted">
-            Trading forex, cryptocurrencies, and other financial instruments
-            involves risk. Educational content on this platform is not
-            personalized financial advice.
-          </p>
-        </div>
-      </main>
-
-      <Footer />
-    </>
-  );
+export default function HomePage() {
+  return <><Navbar/><main className="bg-background text-foreground"><section className="px-4 py-24 sm:px-6 lg:px-8"><div className="mx-auto max-w-6xl"><p className="text-sm font-bold uppercase tracking-[.2em] text-primary">TradeWithMe Global</p><h1 className="mt-5 max-w-3xl text-4xl font-bold leading-tight sm:text-6xl">Learn about markets. Make informed decisions.</h1><p className="mt-6 max-w-2xl text-lg leading-8 text-muted">Explore financial-market education, practical learning resources, and responsible risk awareness.</p><div className="mt-8 flex flex-wrap gap-4"><Link href="/academy" className="rounded-lg bg-primary px-5 py-3 font-semibold text-background">Explore the academy</Link><Link href="/register" className="rounded-lg border border-border px-5 py-3 font-semibold">Create an account</Link></div></div></section><section className="border-t border-border bg-panelAlt px-4 py-16 sm:px-6 lg:px-8"><div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-3">{cards.map((card)=><Link key={card.href} href={card.href} className="rounded-xl border border-border bg-panel p-6 transition-colors hover:border-primary/50"><h2 className="text-xl font-bold">{card.title}</h2><p className="mt-3 text-sm leading-6 text-muted">{card.description}</p><span className="mt-5 inline-block text-sm font-semibold text-primary">Learn more →</span></Link>)}</div></section><section className="px-4 py-10 sm:px-6 lg:px-8"><p className="mx-auto max-w-6xl text-xs leading-6 text-muted">Trading and investing involve financial risk and may not be suitable for everyone. Content is for general educational purposes and is not personalized financial advice.</p></section></main><Footer/></>;
 }
