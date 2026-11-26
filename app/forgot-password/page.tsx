@@ -5,8 +5,6 @@ import Link from 'next/link';
 import Navbar from '../../components/layout/Navbar';
 import Footer from '../../components/layout/Footer';
 
-export const metadata = { title: 'Forgot Password | TradeWithMe Global', description: 'Password recovery information for TradeWithMe Global.' };
-
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
