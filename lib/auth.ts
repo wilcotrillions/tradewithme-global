@@ -63,8 +63,6 @@ export async function verifyPassword(password: string, storedHash: string): Prom
     if (parts.length !== 5) return false;
     const [scheme, algorithm, iterations, saltText, hashText] = parts;
     if (scheme !== 'pbkdf2' || algorithm !== 'sha256' || iterations !== String(PBKDF2_ITERATIONS)) return false;
-    // The current format uses a 16-byte salt (24 base64 characters) and a 32-byte digest.
-    if (!/^[A-Za-z0-9+/]{22}==$/.test(saltText) || !/^[A-Za-z0-9+/]{43}=$/.test(hashText)) return false;
     const salt = fromBase64(saltText);
     const expected = fromBase64(hashText);
     if (salt.length !== 16 || expected.length !== 32) return false;
@@ -98,11 +96,8 @@ export async function getCurrentUser(): Promise<AuthenticatedUser | null> {
   const token = cookieStore.get(SESSION_COOKIE)?.value;
   if (!token || token.length !== 43 || !/^[A-Za-z0-9_-]+$/.test(token)) return null;
   const hashedToken = await hashSessionToken(token);
-  return getDatabase()
-    .prepare(`SELECT users.id, users.email, user_profiles.first_name, user_profiles.last_name
-      FROM sessions INNER JOIN users ON users.id = sessions.user_id
-      LEFT JOIN user_profiles ON user_profiles.user_id = users.id
-      WHERE sessions.id = ? AND sessions.expires_at > ? LIMIT 1`)
-    .bind(hashedToken, new Date().toISOString())
-    .first<AuthenticatedUser>();
+  return getDatabase().prepare(`SELECT users.id, users.email, user_profiles.first_name, user_profiles.last_name
+    FROM sessions INNER JOIN users ON users.id = sessions.user_id
+    LEFT JOIN user_profiles ON user_profiles.user_id = users.id
+    WHERE sessions.id = ? AND sessions.expires_at > ? LIMIT 1`).bind(hashedToken, new Date().toISOString()).first<AuthenticatedUser>();
 }

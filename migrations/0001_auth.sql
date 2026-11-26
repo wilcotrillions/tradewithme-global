@@ -1,4 +1,4 @@
--- D1 schema for application authentication.
+-- D1 authentication schema
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE IF NOT EXISTS users (
