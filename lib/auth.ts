@@ -30,7 +30,9 @@ export function getDatabase(): D1Database {
   const database = (env as unknown as { DB?: D1Database }).DB;
 
   if (!database) {
-    throw new Error('Cloudflare D1 database binding DB is unavailable.');
+    throw new Error(
+      'Cloudflare D1 database binding DB is unavailable.'
+    );
   }
 
   return database;
@@ -39,6 +41,7 @@ export function getDatabase(): D1Database {
 function toBase64(bytes: Uint8Array): string {
   let binary = '';
 
+  // Indexed iteration avoids TypeScript downlevelIteration errors.
   for (let index = 0; index < bytes.length; index += 1) {
     binary += String.fromCharCode(bytes[index]);
   }
@@ -48,19 +51,28 @@ function toBase64(bytes: Uint8Array): string {
 
 function fromBase64(value: string): Uint8Array {
   const binary = atob(value);
+  const bytes = new Uint8Array(binary.length);
 
-  return Uint8Array.from(binary, (character) =>
-    character.charCodeAt(0)
-  );
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+
+  return bytes;
 }
 
 function toHex(bytes: Uint8Array): string {
-  return Array.from(bytes)
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
+  let result = '';
+
+  for (let index = 0; index < bytes.length; index += 1) {
+    result += bytes[index].toString(16).padStart(2, '0');
+  }
+
+  return result;
 }
 
-export async function hashPassword(password: string): Promise<string> {
+export async function hashPassword(
+  password: string
+): Promise<string> {
   const salt = crypto.getRandomValues(new Uint8Array(16));
 
   const key = await crypto.subtle.importKey(
@@ -100,9 +112,17 @@ export async function verifyPassword(
   try {
     const parts = storedHash.split('$');
 
-    if (parts.length !== 5) return false;
+    if (parts.length !== 5) {
+      return false;
+    }
 
-    const [scheme, algorithm, iterationsText, saltText, hashText] = parts;
+    const [
+      scheme,
+      algorithm,
+      iterationsText,
+      saltText,
+      hashText,
+    ] = parts;
 
     if (
       scheme !== 'pbkdf2' ||
@@ -112,7 +132,7 @@ export async function verifyPassword(
       return false;
     }
 
-    // Copy the decoded bytes into an ArrayBuffer-backed view accepted by Web Crypto.
+    // Create independent byte arrays for Web Crypto.
     const salt = new Uint8Array(fromBase64(saltText));
     const expectedHash = fromBase64(hashText);
 
@@ -137,12 +157,15 @@ export async function verifyPassword(
 
     const actualHash = new Uint8Array(derivedBits);
 
-    if (actualHash.length !== expectedHash.length) return false;
+    if (actualHash.length !== expectedHash.length) {
+      return false;
+    }
 
+    // Constant-time comparison.
     let difference = 0;
 
-    for (let i = 0; i < actualHash.length; i++) {
-      difference |= actualHash[i] ^ expectedHash[i];
+    for (let index = 0; index < actualHash.length; index += 1) {
+      difference |= actualHash[index] ^ expectedHash[index];
     }
 
     return difference === 0;
@@ -160,7 +183,9 @@ export function createSessionToken(): string {
     .replace(/=/g, '');
 }
 
-export async function hashSessionToken(token: string): Promise<string> {
+export async function hashSessionToken(
+  token: string
+): Promise<string> {
   const digest = await crypto.subtle.digest(
     'SHA-256',
     new TextEncoder().encode(token)
@@ -187,7 +212,10 @@ export async function createSession(
     .bind(hashedToken, userId, expiresAt)
     .run();
 
-  return { token, expiresAt };
+  return {
+    token,
+    expiresAt,
+  };
 }
 
 export async function getCurrentUser(): Promise<AuthenticatedUser | null> {
@@ -210,8 +238,10 @@ export async function getCurrentUser(): Promise<AuthenticatedUser | null> {
         user_profiles.first_name,
         user_profiles.last_name
       FROM sessions
-      INNER JOIN users ON users.id = sessions.user_id
-      LEFT JOIN user_profiles ON user_profiles.user_id = users.id
+      INNER JOIN users
+        ON users.id = sessions.user_id
+      LEFT JOIN user_profiles
+        ON user_profiles.user_id = users.id
       WHERE sessions.id = ?
         AND sessions.expires_at > ?
       LIMIT 1`
@@ -225,7 +255,11 @@ export async function getCurrentUser(): Promise<AuthenticatedUser | null> {
 export function setSessionCookie(
   response: Response & {
     cookies: {
-      set: (name: string, value: string, options: Record<string, unknown>) => void;
+      set: (
+        name: string,
+        value: string,
+        options: Record<string, unknown>
+      ) => void;
     };
   },
   token: string
