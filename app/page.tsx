@@ -1,118 +1,75 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
-import { getCurrentUser } from '../lib/auth';
 
-export const dynamic = 'force-dynamic';
-
-export const metadata = {
-  title: 'Dashboard | TradeWithMe Global',
-  description: 'Your secure TradeWithMe Global member dashboard.',
+export const metadata: Metadata = {
+  title: 'TradeWithMe Global | Trading education',
+  description: 'Professional trading and investment education, market insights, and learning resources.',
 };
 
-const dashboardCards = [
-  {
-    title: 'Trading Hub',
-    description: 'Explore financial market education and trading resources.',
-    href: '/trading',
-  },
-  {
-    title: 'Investment Education',
-    description: 'Learn about investment planning and risk management.',
-    href: '/investments',
-  },
-  {
-    title: 'Trading Academy',
-    description: 'Continue learning about financial markets and trading.',
-    href: '/academy',
-  },
-  {
-    title: 'Account',
-    description: 'Manage your member account and personal information.',
-    href: '/account',
-  },
-];
-
-export default async function DashboardPage() {
-  const user = await getCurrentUser();
-
-  if (!user) {
-    redirect('/login');
-  }
-
-  const fullName = [user.first_name, user.last_name]
-    .filter(Boolean)
-    .join(' ');
+export default function HomePage() {
+  const marketOverview = [
+    { name: 'EUR/USD', movement: '+1.24%', positive: true },
+    { name: 'GBP/USD', movement: '+0.86%', positive: true },
+    { name: 'Gold', movement: '-0.31%', positive: false },
+    { name: 'BTC/USD', movement: '+2.17%', positive: true },
+    { name: 'NASDAQ', movement: '+0.74%', positive: true },
+  ];
+  const focusCards = [
+    { icon: '📊', title: 'Market Education', description: 'Learn technical analysis, market structure, risk management, trading psychology, and investment fundamentals.' },
+    { icon: '📈', title: 'Trading Strategies', description: 'Explore structured approaches to analyzing markets and developing your own trading plan.' },
+    { icon: '🛡️', title: 'Risk Management', description: 'Understand position sizing, stop-loss planning, portfolio protection, and responsible trading practices.' },
+  ];
+  const educationCards = [
+    { icon: '🎓', title: 'Beginner Education', description: 'Start with the fundamentals and develop a strong understanding of how financial markets work.' },
+    { icon: '🧠', title: 'Trading Psychology', description: 'Learn how discipline, patience, and emotional control affect trading decisions.' },
+    { icon: '💼', title: 'Professional Development', description: 'Develop structured routines and analytical skills for a more professional approach to trading.' },
+  ];
 
   return (
     <>
       <Navbar />
-
-      <main className="min-h-screen bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-10 flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
+      <main className="bg-background text-foreground">
+        <section className="px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+          <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.2fr_0.8fr]">
             <div>
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary">
-                Member Dashboard
-              </p>
-
-              <h1 className="text-3xl font-bold sm:text-4xl">
-                Welcome back{fullName ? `, ${fullName}` : ''}
-              </h1>
-
-              <p className="mt-3 text-sm text-muted">
-                You are signed in as {user.email}
-              </p>
+              <p className="text-sm font-bold uppercase tracking-[.2em] text-primary">TradeWithMe Global</p>
+              <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-tight sm:text-6xl">Trade Smarter. <span className="text-primary">Invest Better.</span></h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">TradeWithMe Global is a professional trading and investment education platform designed to help you understand the markets, develop better strategies, and make informed decisions.</p>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Link href="/register" className="rounded-lg bg-primary px-5 py-3 font-semibold text-background">Get Started</Link>
+                <Link href="#about" className="rounded-lg border border-border px-5 py-3 font-semibold">Explore Platform</Link>
+              </div>
             </div>
-
-            <form action="/api/auth/logout" method="POST">
-              <button
-                type="submit"
-                className="rounded-lg border border-border px-5 py-3 text-sm font-semibold transition hover:border-primary hover:text-primary"
-              >
-                Sign Out
-              </button>
-            </form>
+            <aside aria-label="Illustrative market overview" className="rounded-2xl border border-border bg-panel p-6 shadow-xl">
+              <h2 className="mb-4 text-lg font-semibold">Market Overview</h2>
+              <ul className="divide-y divide-border">
+                {marketOverview.map((market) => <li key={market.name} className="flex justify-between py-3 text-sm"><span>{market.name}</span><span className={market.positive ? 'text-emerald-400' : 'text-red-400'}>{market.movement}</span></li>)}
+              </ul>
+              <p className="mt-3 text-xs text-muted">Illustrative market data, not live quotes.</p>
+            </aside>
           </div>
+        </section>
 
-          <div className="mb-8 rounded-xl border border-border bg-panel p-6">
-            <h2 className="text-xl font-bold">Your account is active</h2>
-
-            <p className="mt-2 text-sm leading-7 text-muted">
-              Welcome to TradeWithMe Global. Explore the learning resources
-              and financial market education available on the platform.
-            </p>
+        <section id="about" className="border-t border-border bg-panelAlt px-4 py-16 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-10 text-center"><h2 className="text-3xl font-bold">Built for Serious Traders</h2><p className="mt-3 text-muted">Everything you need to improve your understanding of financial markets in one platform.</p></div>
+            <div className="grid gap-5 md:grid-cols-3">{focusCards.map((card) => <article key={card.title} className="rounded-2xl border border-border bg-panel p-6"><div className="text-3xl">{card.icon}</div><h3 className="mt-4 text-xl font-semibold">{card.title}</h3><p className="mt-3 text-sm leading-6 text-muted">{card.description}</p></article>)}</div>
           </div>
+        </section>
 
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-            {dashboardCards.map((card) => (
-              <Link
-                key={card.title}
-                href={card.href}
-                className="rounded-xl border border-border bg-panel p-6 transition hover:-translate-y-1 hover:border-primary/50"
-              >
-                <h2 className="text-lg font-bold">{card.title}</h2>
-
-                <p className="mt-3 text-sm leading-7 text-muted">
-                  {card.description}
-                </p>
-
-                <span className="mt-5 inline-block text-sm font-semibold text-primary">
-                  Explore →
-                </span>
-              </Link>
-            ))}
+        <section id="education" className="px-4 py-16 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-10 text-center"><h2 className="text-3xl font-bold">Learn. Practice. Improve.</h2><p className="mt-3 text-muted">Build your knowledge before putting your capital at risk.</p></div>
+            <div className="grid gap-5 md:grid-cols-3">{educationCards.map((card) => <article key={card.title} className="rounded-2xl border border-border bg-panel p-6"><div className="text-3xl">{card.icon}</div><h3 className="mt-4 text-xl font-semibold">{card.title}</h3><p className="mt-3 text-sm leading-6 text-muted">{card.description}</p></article>)}</div>
           </div>
+        </section>
 
-          <p className="mt-10 text-xs leading-6 text-muted">
-            Trading forex, cryptocurrencies, and other financial instruments
-            involves risk. Educational content on this platform is not
-            personalized financial advice.
-          </p>
-        </div>
+        <section className="border-y border-border bg-panelAlt px-4 py-16 text-center sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl"><h2 className="text-3xl font-bold">Ready to Trade With Knowledge?</h2><p className="mt-4 leading-7 text-muted">Join TradeWithMe Global and access a professional environment focused on trading education and market development.</p><Link href="/login" className="mt-7 inline-block rounded-lg bg-primary px-5 py-3 font-semibold text-background">Access Your Account</Link></div>
+        </section>
       </main>
-
       <Footer />
     </>
   );

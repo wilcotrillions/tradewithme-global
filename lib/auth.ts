@@ -41,7 +41,6 @@ export function getDatabase(): D1Database {
 function toBase64(bytes: Uint8Array): string {
   let binary = '';
 
-  // Indexed iteration avoids TypeScript downlevelIteration errors.
   for (let index = 0; index < bytes.length; index += 1) {
     binary += String.fromCharCode(bytes[index]);
   }
@@ -70,11 +69,10 @@ function toHex(bytes: Uint8Array): string {
   return result;
 }
 
-export async function hashPassword(
-  password: string
-): Promise<string> {
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-
+async function derivePasswordHash(
+  password: string,
+  salt: Uint8Array
+): Promise<Uint8Array> {
   const key = await crypto.subtle.importKey(
     'raw',
     new TextEncoder().encode(password),
@@ -94,7 +92,14 @@ export async function hashPassword(
     256
   );
 
-  const hash = new Uint8Array(derivedBits);
+  return new Uint8Array(derivedBits);
+}
+
+export async function hashPassword(
+  password: string
+): Promise<string> {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const hash = await derivePasswordHash(password, salt);
 
   return [
     'pbkdf2',
@@ -127,41 +132,27 @@ export async function verifyPassword(
     if (
       scheme !== 'pbkdf2' ||
       algorithm !== 'sha256' ||
-      Number(iterationsText) !== PBKDF2_ITERATIONS
+      iterationsText !== String(PBKDF2_ITERATIONS)
     ) {
       return false;
     }
 
-    // Create independent byte arrays for Web Crypto.
-    const salt = new Uint8Array(fromBase64(saltText));
+    const salt = fromBase64(saltText);
     const expectedHash = fromBase64(hashText);
 
-    const key = await crypto.subtle.importKey(
-      'raw',
-      new TextEncoder().encode(password),
-      'PBKDF2',
-      false,
-      ['deriveBits']
-    );
+    if (salt.length !== 16 || expectedHash.length !== 32) {
+      return false;
+    }
 
-    const derivedBits = await crypto.subtle.deriveBits(
-      {
-        name: 'PBKDF2',
-        salt,
-        iterations: PBKDF2_ITERATIONS,
-        hash: 'SHA-256',
-      },
-      key,
-      256
+    const actualHash = await derivePasswordHash(
+      password,
+      salt
     );
-
-    const actualHash = new Uint8Array(derivedBits);
 
     if (actualHash.length !== expectedHash.length) {
       return false;
     }
 
-    // Constant-time comparison.
     let difference = 0;
 
     for (let index = 0; index < actualHash.length; index += 1) {
@@ -222,7 +213,11 @@ export async function getCurrentUser(): Promise<AuthenticatedUser | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE)?.value;
 
-  if (!token || token.length > 200) {
+  if (
+    !token ||
+    token.length !== 43 ||
+    !/^[A-Za-z0-9_-]+$/.test(token)
+  ) {
     return null;
   }
 

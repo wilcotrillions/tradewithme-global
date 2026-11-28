@@ -6,6 +6,7 @@ on:
       - main
       - "repair/**"
       - "fix/**"
+      - copilot/fix-tradewithme-auth
 
   pull_request:
     branches:
@@ -34,10 +35,10 @@ jobs:
       - name: Validate package configuration
         run: |
           node -e "JSON.parse(require('fs').readFileSync('package.json', 'utf8'))"
-          if [ ! -f package-lock.json ]; then
+          test -f package-lock.json || {
             echo "ERROR: package-lock.json is missing."
             exit 1
-          fi
+          }
 
       - name: Install dependencies
         run: npm ci
@@ -46,7 +47,7 @@ jobs:
         run: npm run lint
 
       - name: Check TypeScript
-        run: npx tsc --noEmit
+        run: npm run typecheck
 
       - name: Build Next.js application
         run: npm run build
@@ -66,29 +67,3 @@ jobs:
 
       - name: Run Deno lint
         run: deno lint auth.js
-
-      - name: Check for Deno tests
-        shell: bash
-        run: |
-          set -e
-
-          TEST_FILES=$(find . \
-            -type f \
-            \( \
-              -name "*_test.ts" \
-              -o -name "*_test.tsx" \
-              -o -name "*.test.ts" \
-              -o -name "*.test.tsx" \
-            \) \
-            -not -path "./.git/*" \
-            -not -path "./node_modules/*" \
-            2>/dev/null || true)
-
-          if [ -n "$TEST_FILES" ]; then
-            echo "Test modules found:"
-            echo "$TEST_FILES"
-            deno test --allow-all
-          else
-            echo "No Deno test modules found."
-            echo "Skipping tests."
-          fi

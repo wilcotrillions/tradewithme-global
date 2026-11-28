@@ -1,10 +1,26 @@
+import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 import DashboardClient from './DashboardClient';
+import { getCurrentUser } from '../../lib/auth';
 
-export const metadata = {
-  title: 'Customer dashboard | TradeWithMe Global',
-  description: 'View your account overview, activity, and learning tools.',
+export const dynamic = 'force-dynamic';
+
+export const metadata: Metadata = {
+  title: 'Dashboard | TradeWithMe Global',
+  description: 'Your secure TradeWithMe Global member dashboard.',
 };
 
-export default function DashboardPage() {
-  return <DashboardClient />;
+export default async function DashboardPage() {
+  const user = await getCurrentUser();
+  if (!user) redirect('/login');
+
+  return (
+    <DashboardClient
+      user={{
+        firstName: user.first_name,
+        lastName: user.last_name,
+        email: user.email,
+      }}
+    />
+  );
 }
